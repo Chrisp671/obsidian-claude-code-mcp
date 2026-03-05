@@ -5,6 +5,7 @@ import { spawn, ChildProcess } from "child_process";
 import {
 	Pseudoterminal,
 	UnixPseudoterminal,
+	WindowsPseudoterminal,
 	ChildProcessPseudoterminal,
 } from "./pseudoterminal";
 import { PythonManager } from "./python-detection";
@@ -185,18 +186,23 @@ export class ClaudeTerminalView extends ItemView {
 			// Determine shell command based on platform
 			const isWindows = process.platform === "win32";
 			const shell = isWindows
-				? "cmd.exe"
+				? "powershell.exe"
 				: process.env.SHELL || "/bin/zsh";
-			const args = isWindows ? [] : ["-l"];
+			const args = isWindows ? ["-NoLogo"] : ["-l"];
 
 			console.debug(`[Terminal] Starting shell: ${shell}`, args);
 			console.debug(`[Terminal] Working directory: ${vaultPath}`);
 
 			// Try Python PTY approach first
-			if (this.pythonManager.isAvailable() && !isWindows) {
+			if (this.pythonManager.isAvailable()) {
 				try {
-					console.debug("[Terminal] Using Python PTY approach");
-					await this.startPythonPTY(shell, args, vaultPath);
+					if (isWindows) {
+						console.debug("[Terminal] Using Windows ConPTY via pywinpty");
+						await this.startWindowsPTY(shell, args, vaultPath);
+					} else {
+						console.debug("[Terminal] Using Unix Python PTY approach");
+						await this.startPythonPTY(shell, args, vaultPath);
+					}
 					return;
 				} catch (error) {
 					console.warn(
@@ -205,21 +211,72 @@ export class ClaudeTerminalView extends ItemView {
 					);
 					new Notice("Terminal: Python PTY failed, using basic mode");
 				}
-			} else {
-				if (!this.pythonManager.isAvailable()) {
-					console.debug(
-						"[Terminal] Python not available, using child_process fallback"
-					);
-				}
-				if (isWindows) {
-					console.debug(
-						"[Terminal] Windows platform, using child_process fallback"
-					);
-				}
 			}
+
+			// Fallback: use child_process (works on all platforms including Windows)
+			console.debug("[Terminal] Using child_process fallback");
+			await this.startChildProcess(shell, args, vaultPath);
 		} catch (error: any) {
 			console.error("[Terminal] Failed to start shell:", error);
 			this.terminal.write(`Failed to start shell: ${error.message}\r\n`);
+		}
+	}
+
+	private async startChildProcess(
+		shell: string,
+		args: string[],
+		vaultPath: string
+	): Promise<void> {
+		this.pseudoterminal = new ChildProcessPseudoterminal({
+			executable: shell,
+			args,
+			cwd: vaultPath,
+			env: this.getTerminalEnv(),
+		});
+
+		await this.pseudoterminal.pipe(this.terminal);
+
+		this.pseudoterminal.onExit
+			.then((exitCode) => {
+				console.debug(`[Terminal] Shell exited with code ${exitCode}`);
+				if (!this.isDestroyed) {
+					this.terminal.write(
+						`\r\n\r\nShell exited with code ${exitCode}\r\n`
+					);
+				}
+			})
+			.catch((error: unknown) => {
+				console.error("[Terminal] Shell error:", error);
+			});
+
+		// Auto-launch startup command after a brief delay
+		setTimeout(() => this.launchClaudeChildProcess(), 500);
+	}
+
+	private async launchClaudeChildProcess(): Promise<void> {
+		if (!this.isDestroyed && this.pseudoterminal) {
+			const startupCommand = this.plugin.settings.startupCommand.trim();
+			if (!startupCommand) {
+				console.debug(
+					"[Terminal] Startup command is empty, skipping auto-launch"
+				);
+				return;
+			}
+
+			console.debug(
+				`[Terminal] Auto-launching startup command: ${startupCommand}`
+			);
+			try {
+				const shell = await this.pseudoterminal.shell;
+				if (shell?.stdin) {
+					shell.stdin.write(`${startupCommand}\n`);
+				}
+			} catch (error) {
+				console.warn(
+					"[Terminal] Failed to auto-launch startup command:",
+					error
+				);
+			}
 		}
 	}
 
@@ -261,6 +318,46 @@ export class ClaudeTerminalView extends ItemView {
 
 		// Auto-launch claude command after a brief delay
 		setTimeout(() => this.launchClaude(), 100);
+	}
+
+	private async startWindowsPTY(
+		shell: string,
+		args: string[],
+		vaultPath: string
+	): Promise<void> {
+		const pythonExecutable = this.pythonManager.getExecutable();
+		if (!pythonExecutable) {
+			throw new Error("Python executable not available");
+		}
+
+		this.pseudoterminal = new WindowsPseudoterminal({
+			executable: shell,
+			args,
+			cwd: vaultPath,
+			pythonExecutable,
+			terminal: "xterm-256color",
+			env: this.getTerminalEnv(),
+		});
+
+		// Pipe pseudoterminal to xterm
+		await this.pseudoterminal.pipe(this.terminal);
+
+		// Handle exit
+		this.pseudoterminal.onExit
+			.then((exitCode) => {
+				console.debug(`[Terminal] Windows PTY exited with code ${exitCode}`);
+				if (!this.isDestroyed) {
+					this.terminal.write(
+						`\r\n\r\nShell exited with code ${exitCode}\r\n`
+					);
+				}
+			})
+			.catch((error: unknown) => {
+				console.error("[Terminal] Windows PTY error:", error);
+			});
+
+		// Auto-launch claude command after shell initializes
+		setTimeout(() => this.launchClaude(), 500);
 	}
 
 	private getTerminalEnv(): NodeJS.ProcessEnv {

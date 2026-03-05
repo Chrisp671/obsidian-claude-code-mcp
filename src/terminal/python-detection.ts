@@ -48,13 +48,21 @@ export async function detectPython(): Promise<PythonInfo | null> {
 }
 
 export async function checkPythonDependencies(pythonExecutable: string): Promise<boolean> {
-  // For Unix systems, we only need the standard library (pty, selectors, etc.)
-  // These are built-in, so we just check if Python runs
+  const isWindows = process.platform === "win32";
+
+  // Windows needs pywinpty for ConPTY support, Unix needs pty (stdlib)
+  const checkScript = isWindows
+    ? `"import sys, threading; from winpty import PtyProcess; print('OK')"`
+    : `"import pty, selectors, sys; print('OK')"`;
+
   try {
-    const result = await execAsync(`${pythonExecutable} -c "import pty, selectors, sys; print('OK')"`);
+    const result = await execAsync(`${pythonExecutable} -c ${checkScript}`);
     return result.stdout.trim() === "OK";
   } catch (error) {
     console.warn("[Terminal] Python dependencies check failed:", error);
+    if (isWindows) {
+      console.warn("[Terminal] On Windows, install pywinpty: pip install pywinpty");
+    }
     return false;
   }
 }

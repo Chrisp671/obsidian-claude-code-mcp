@@ -2,6 +2,7 @@ import { spawn, ChildProcess } from "child_process";
 import { Terminal } from "@xterm/xterm";
 import { Writable } from "stream";
 import unixPseudoterminalPy from "./unix_pseudoterminal.py";
+import windowsPseudoterminalPy from "./windows_pseudoterminal.py";
 
 export interface Pseudoterminal {
   readonly shell?: Promise<ChildProcess> | undefined;
@@ -137,6 +138,97 @@ export class UnixPseudoterminal implements Pseudoterminal {
   }
 }
 
+export class WindowsPseudoterminal implements Pseudoterminal {
+  public readonly shell: Promise<ChildProcess>;
+  public readonly onExit: Promise<NodeJS.Signals | number>;
+
+  constructor(args: PseudoterminalArgs) {
+    this.shell = this.spawnPythonHelper(args);
+    this.onExit = this.shell.then(shell =>
+      new Promise(resolve => {
+        shell.once("exit", (code, signal) => {
+          resolve(code ?? signal ?? NaN);
+        });
+      })
+    );
+  }
+
+  private async spawnPythonHelper(args: PseudoterminalArgs): Promise<ChildProcess> {
+    const python = args.pythonExecutable || "python";
+
+    const env: NodeJS.ProcessEnv = {
+      ...process.env,
+      ...args.env,
+      PYTHONIOENCODING: "utf-8",
+    };
+
+    if (args.terminal) {
+      env["TERM"] = args.terminal;
+    }
+
+    // On Windows, use only 3 stdio pipes (no fd 3 for resize)
+    const child = spawn(
+      python,
+      ["-c", windowsPseudoterminalPy, args.executable, ...(args.args || [])],
+      {
+        cwd: args.cwd,
+        env,
+        stdio: ["pipe", "pipe", "pipe"],
+        windowsHide: true,
+      }
+    );
+
+    // Log stderr for debugging
+    child.stderr?.on("data", (chunk: Buffer) => {
+      console.error("[Windows PTY stderr]", chunk.toString());
+    });
+
+    return child;
+  }
+
+  async pipe(terminal: Terminal): Promise<void> {
+    const shell = await this.shell;
+
+    const reader = (chunk: Buffer | string): void => {
+      try {
+        terminal.write(chunk.toString());
+      } catch (error: unknown) {
+        console.error("[Terminal] Write error:", error);
+      }
+    };
+
+    // Only pipe stdout to terminal (stderr goes to console for debugging)
+    shell.stdout?.on("data", reader);
+
+    // Pipe terminal input to shell stdin
+    const disposable = terminal.onData(async (data: string) => {
+      try {
+        if (shell.stdin) {
+          await writePromise(shell.stdin, data);
+        }
+      } catch (error) {
+        console.error("[Terminal] Input error:", error);
+      }
+    });
+
+    // Clean up on exit
+    this.onExit.catch(() => {}).finally(() => {
+      shell.stdout?.removeListener("data", reader);
+      disposable.dispose();
+    });
+  }
+
+  async kill(): Promise<void> {
+    try {
+      const shell = await this.shell;
+      shell.kill();
+    } catch (error) {
+      console.error("[Terminal] Kill failed:", error);
+      throw error;
+    }
+  }
+}
+
 export class ChildProcessPseudoterminal implements Pseudoterminal {
   public readonly shell: Promise<ChildProcess>;
   public readonly onExit: Promise<NodeJS.Signals | number>;
@@ -153,11 +245,7 @@ export class ChildProcessPseudoterminal implements Pseudoterminal {
   }
 
   private async spawnChildProcess(args: PseudoterminalArgs): Promise<ChildProcess> {
-    const isWindows = process.platform === "win32";
-    const shell = isWindows ? "cmd.exe" : args.executable;
-    const shellArgs = isWindows ? [] : (args.args || []);
-
-    return spawn(shell, shellArgs, {
+    return spawn(args.executable, args.args || [], {
       cwd: args.cwd,
       env: {
         ...process.env,
@@ -165,6 +253,7 @@ export class ChildProcessPseudoterminal implements Pseudoterminal {
         TERM: args.terminal || "xterm-256color",
       },
       stdio: ["pipe", "pipe", "pipe"],
+      shell: process.platform === "win32",
     });
   }
 

@@ -1,6 +1,9 @@
 import { spawn, ChildProcess } from "child_process";
 import { Terminal } from "@xterm/xterm";
 import { Writable } from "stream";
+import { writeFileSync, unlinkSync } from "fs";
+import { tmpdir } from "os";
+import { join } from "path";
 import unixPseudoterminalPy from "./unix_pseudoterminal.py";
 import windowsPseudoterminalPy from "./windows_pseudoterminal.py";
 
@@ -141,6 +144,7 @@ export class UnixPseudoterminal implements Pseudoterminal {
 export class WindowsPseudoterminal implements Pseudoterminal {
   public readonly shell: Promise<ChildProcess>;
   public readonly onExit: Promise<NodeJS.Signals | number>;
+  private scriptPath: string | null = null;
 
   constructor(args: PseudoterminalArgs) {
     this.shell = this.spawnPythonHelper(args);
@@ -156,6 +160,16 @@ export class WindowsPseudoterminal implements Pseudoterminal {
   private async spawnPythonHelper(args: PseudoterminalArgs): Promise<ChildProcess> {
     const python = args.pythonExecutable || "python";
 
+    // Write Python script to temp file to avoid Windows command-line quoting issues
+    // Passing a multi-line Python script via -c on Windows is unreliable due to
+    // how CreateProcessW handles quotes and special characters in the command line.
+    this.scriptPath = join(
+      tmpdir(),
+      `obsidian-pty-${Date.now()}-${Math.random().toString(36).slice(2)}.py`
+    );
+    writeFileSync(this.scriptPath, windowsPseudoterminalPy, "utf-8");
+    console.debug(`[Windows PTY] Wrote helper script to: ${this.scriptPath}`);
+
     const env: NodeJS.ProcessEnv = {
       ...process.env,
       ...args.env,
@@ -166,10 +180,9 @@ export class WindowsPseudoterminal implements Pseudoterminal {
       env["TERM"] = args.terminal;
     }
 
-    // On Windows, use only 3 stdio pipes (no fd 3 for resize)
     const child = spawn(
       python,
-      ["-c", windowsPseudoterminalPy, args.executable, ...(args.args || [])],
+      [this.scriptPath, args.executable, ...(args.args || [])],
       {
         cwd: args.cwd,
         env,
@@ -178,9 +191,21 @@ export class WindowsPseudoterminal implements Pseudoterminal {
       }
     );
 
-    // Log stderr for debugging
+    // Clean up temp file when process exits
+    const scriptToClean = this.scriptPath;
+    child.once("exit", () => {
+      try { unlinkSync(scriptToClean); } catch {}
+    });
+
+    // Also clean up on spawn error
+    child.on("error", (error) => {
+      console.error("[Windows PTY] Spawn error:", error);
+      try { unlinkSync(scriptToClean); } catch {}
+    });
+
+    // Log stderr for debugging (ConPTY status messages)
     child.stderr?.on("data", (chunk: Buffer) => {
-      console.error("[Windows PTY stderr]", chunk.toString());
+      console.debug("[Windows PTY stderr]", chunk.toString().trim());
     });
 
     return child;
@@ -203,7 +228,7 @@ export class WindowsPseudoterminal implements Pseudoterminal {
     // Pipe terminal input to shell stdin
     const disposable = terminal.onData(async (data: string) => {
       try {
-        if (shell.stdin) {
+        if (shell.stdin && !shell.stdin.destroyed) {
           await writePromise(shell.stdin, data);
         }
       } catch (error) {
@@ -216,6 +241,19 @@ export class WindowsPseudoterminal implements Pseudoterminal {
       shell.stdout?.removeListener("data", reader);
       disposable.dispose();
     });
+  }
+
+  async resize(columns: number, rows: number): Promise<void> {
+    try {
+      const shell = await this.shell;
+      if (shell.stdin && !shell.stdin.destroyed) {
+        // Send resize command using custom OSC escape sequence
+        // The Python helper script intercepts this and calls proc.setwinsize()
+        shell.stdin.write(`\x1b]9999;${columns}x${rows}\x07`);
+      }
+    } catch (error) {
+      console.warn("[Terminal] Resize failed:", error);
+    }
   }
 
   async kill(): Promise<void> {

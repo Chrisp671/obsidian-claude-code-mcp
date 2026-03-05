@@ -169,8 +169,6 @@ export class ClaudeTerminalView extends ItemView {
 		if (this.fitAddon && !this.isDestroyed) {
 			setTimeout(() => {
 				this.fitAddon.fit();
-				// Note: child_process doesn't support resize like node-pty
-				// For proper terminal resizing, we'd need a PTY library
 			}, 100);
 		}
 	}
@@ -192,13 +190,16 @@ export class ClaudeTerminalView extends ItemView {
 
 			console.debug(`[Terminal] Starting shell: ${shell}`, args);
 			console.debug(`[Terminal] Working directory: ${vaultPath}`);
+			console.debug(`[Terminal] Python available: ${this.pythonManager.isAvailable()}`);
 
 			// Try Python PTY approach first
 			if (this.pythonManager.isAvailable()) {
 				try {
 					if (isWindows) {
 						console.debug("[Terminal] Using Windows ConPTY via pywinpty");
+						new Notice("Terminal: Starting ConPTY mode...");
 						await this.startWindowsPTY(shell, args, vaultPath);
+						new Notice("Terminal: ConPTY active");
 					} else {
 						console.debug("[Terminal] Using Unix Python PTY approach");
 						await this.startPythonPTY(shell, args, vaultPath);
@@ -209,8 +210,11 @@ export class ClaudeTerminalView extends ItemView {
 						"[Terminal] Python PTY failed, falling back to child_process:",
 						error
 					);
-					new Notice("Terminal: Python PTY failed, using basic mode");
+					new Notice(`Terminal: PTY failed (${error}), using basic mode`);
 				}
+			} else {
+				console.debug("[Terminal] Python not available, using child_process");
+				new Notice("Terminal: Python/pywinpty not found, using basic mode");
 			}
 
 			// Fallback: use child_process (works on all platforms including Windows)
@@ -330,13 +334,20 @@ export class ClaudeTerminalView extends ItemView {
 			throw new Error("Python executable not available");
 		}
 
+		console.debug(`[Terminal] Windows ConPTY: python=${pythonExecutable}, shell=${shell}, args=${args}`);
+
+		// Pass terminal dimensions via environment so ConPTY starts with correct size
+		const env = this.getTerminalEnv();
+		env["TERM_COLS"] = String(this.terminal.cols || 120);
+		env["TERM_ROWS"] = String(this.terminal.rows || 30);
+
 		this.pseudoterminal = new WindowsPseudoterminal({
 			executable: shell,
 			args,
 			cwd: vaultPath,
 			pythonExecutable,
 			terminal: "xterm-256color",
-			env: this.getTerminalEnv(),
+			env,
 		});
 
 		// Pipe pseudoterminal to xterm
@@ -357,7 +368,8 @@ export class ClaudeTerminalView extends ItemView {
 			});
 
 		// Auto-launch claude command after shell initializes
-		setTimeout(() => this.launchClaude(), 500);
+		// Give PowerShell enough time to start inside the ConPTY
+		setTimeout(() => this.launchClaude(), 1500);
 	}
 
 	private getTerminalEnv(): NodeJS.ProcessEnv {

@@ -2,17 +2,43 @@ import sys
 import os
 import threading
 import time
+import subprocess
 
 def main():
-    from winpty import PtyProcess
+    try:
+        from winpty import PtyProcess
+    except ImportError as e:
+        sys.stderr.write("ERROR: pywinpty not installed: {}\n".format(e))
+        sys.stderr.write("Install with: pip install pywinpty\n")
+        sys.stderr.flush()
+        sys.exit(1)
 
-    # Build command from argv
-    cmd = sys.argv[1] if len(sys.argv) > 1 else "powershell.exe"
+    # Build command from all arguments (not just argv[1])
+    args = sys.argv[1:] if len(sys.argv) > 1 else ["powershell.exe"]
+    cmd = subprocess.list2cmdline(args)
 
-    # Spawn process in ConPTY
-    proc = PtyProcess.spawn(cmd, dimensions=(24, 120))
+    # Get dimensions from environment or use defaults
+    cols = int(os.environ.get("TERM_COLS", "120"))
+    rows = int(os.environ.get("TERM_ROWS", "30"))
+
+    sys.stderr.write("[ConPTY] Starting: {} ({}x{})\n".format(cmd, cols, rows))
+    sys.stderr.flush()
+
+    try:
+        proc = PtyProcess.spawn(cmd, dimensions=(rows, cols))
+    except Exception as e:
+        sys.stderr.write("ERROR: Failed to spawn ConPTY: {}\n".format(e))
+        sys.stderr.flush()
+        sys.exit(1)
+
+    sys.stderr.write("[ConPTY] Process spawned (PID: {})\n".format(proc.pid))
+    sys.stderr.flush()
 
     exit_code = [None]
+
+    # Resize protocol: Node.js sends \x1b]9999;COLSxROWS\x07 via stdin
+    RESIZE_START = b"\x1b]9999;"
+    RESIZE_END = b"\x07"
 
     def read_pty():
         """Read from ConPTY and write to stdout (goes to Node.js)"""
@@ -27,23 +53,57 @@ def main():
                     sys.stdout.buffer.flush()
             except EOFError:
                 break
-            except Exception:
+            except Exception as e:
+                sys.stderr.write("[ConPTY] Read error: {}\n".format(e))
+                sys.stderr.flush()
                 break
         exit_code[0] = proc.exitstatus if proc.exitstatus is not None else 1
+        sys.stderr.write("[ConPTY] Exited with code: {}\n".format(exit_code[0]))
+        sys.stderr.flush()
 
     def read_stdin():
-        """Read from stdin (from Node.js) and write to ConPTY"""
+        """Read from stdin (from Node.js) and write to ConPTY, handling resize commands"""
         stdin_fd = sys.stdin.fileno()
+        buf = b""
         while proc.isalive():
             try:
                 data = os.read(stdin_fd, 4096)
                 if not data:
                     break
-                text = data.decode("utf-8", "replace")
-                proc.write(text)
+                buf += data
+
+                # Process any resize escape sequences in the buffer
+                while RESIZE_START in buf:
+                    pre_idx = buf.index(RESIZE_START)
+                    # Send data before the resize command to the PTY
+                    if pre_idx > 0:
+                        proc.write(buf[:pre_idx].decode("utf-8", "replace"))
+
+                    end_idx = buf.find(RESIZE_END, pre_idx)
+                    if end_idx == -1:
+                        # Incomplete resize sequence, keep in buffer and wait
+                        buf = buf[pre_idx:]
+                        break
+
+                    # Parse and apply the resize command
+                    resize_data = buf[pre_idx + len(RESIZE_START):end_idx].decode("utf-8")
+                    buf = buf[end_idx + 1:]
+                    try:
+                        c, r = resize_data.split("x")
+                        proc.setwinsize(int(r), int(c))
+                    except Exception as e:
+                        sys.stderr.write("[ConPTY] Resize error: {}\n".format(e))
+                        sys.stderr.flush()
+                else:
+                    # No (more) resize commands in buffer, send all to PTY
+                    if buf:
+                        proc.write(buf.decode("utf-8", "replace"))
+                        buf = b""
             except (OSError, EOFError):
                 break
-            except Exception:
+            except Exception as e:
+                sys.stderr.write("[ConPTY] Stdin error: {}\n".format(e))
+                sys.stderr.flush()
                 break
 
     # Start I/O threads

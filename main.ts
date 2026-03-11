@@ -34,6 +34,11 @@ export default class ClaudeMcpPlugin extends Plugin {
 			</svg>`
 		);
 
+		// Manage .claudeignore for session stability
+		if (this.settings.manageClaudeignore) {
+			await this.ensureClaudeignore();
+		}
+
 		// Conditionally initialize terminal features (lazy-loaded to save resources)
 		if (this.settings.enableEmbeddedTerminal) {
 			await this.initializeTerminalFeatures();
@@ -339,6 +344,61 @@ export default class ClaudeMcpPlugin extends Plugin {
 				(terminalView as any).focusTerminal();
 			}
 		}, 150);
+	}
+
+	/* ---------------- .claudeignore management ---------------- */
+
+	async ensureClaudeignore(): Promise<void> {
+		const MANAGED_MARKER = "# Managed by obsidian-claude-code-mcp";
+		const ESSENTIAL_ENTRIES = [
+			".obsidian/plugins/*/node_modules/",
+			".obsidian/workspace.json",
+			".obsidian/workspace-mobile.json",
+			".obsidian/plugins/obsidian-excalidraw-plugin/",
+			"*conflict*",
+		];
+
+		try {
+			const filePath = ".claudeignore";
+			const adapter = this.app.vault.adapter;
+
+			if (await adapter.exists(filePath)) {
+				// File exists — merge missing essential entries
+				const existing = await adapter.read(filePath);
+				const existingLines = new Set(
+					existing.split("\n").map((l) => l.trim()).filter(Boolean)
+				);
+
+				const missing = ESSENTIAL_ENTRIES.filter(
+					(entry) => !existingLines.has(entry)
+				);
+
+				if (missing.length > 0) {
+					const appendBlock =
+						"\n\n" +
+						MANAGED_MARKER +
+						"\n" +
+						missing.join("\n") +
+						"\n";
+					await adapter.write(filePath, existing.trimEnd() + appendBlock);
+					console.debug(
+						`[MCP] Updated .claudeignore with ${missing.length} entries`
+					);
+				}
+			} else {
+				// Create new file
+				const content =
+					MANAGED_MARKER +
+					"\n" +
+					"# Excludes heavy directories to keep Claude Code sessions stable\n\n" +
+					ESSENTIAL_ENTRIES.join("\n") +
+					"\n";
+				await adapter.write(filePath, content);
+				console.debug("[MCP] Created .claudeignore");
+			}
+		} catch (error) {
+			console.warn("[MCP] Failed to manage .claudeignore:", error);
+		}
 	}
 
 	async loadSettings() {

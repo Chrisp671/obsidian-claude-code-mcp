@@ -78,6 +78,10 @@ export class McpHandlers {
 			case "ping":
 				return reply({ result: {} });
 
+			case "notifications/initialized":
+				// Client acknowledges initialization — no response needed
+				return;
+
 			// Legacy file operation methods (for backward compatibility)
 			case "readFile":
 				return this.fileTools.handleReadFile(req, reply);

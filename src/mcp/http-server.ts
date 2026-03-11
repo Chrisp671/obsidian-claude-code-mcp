@@ -54,6 +54,10 @@ export class McpHttpServer {
 				this.handleRequest(req, res);
 			});
 
+			// Increase keep-alive timeout to reduce connection churn
+			this.server.keepAliveTimeout = 65000;
+			this.server.headersTimeout = 70000;
+
 			this.server.on("error", (error: any) => {
 				if (error.code === "EADDRINUSE") {
 					console.error(`[MCP HTTP] Port ${port} is in use`);
@@ -61,6 +65,18 @@ export class McpHttpServer {
 				} else {
 					console.error("[MCP HTTP] Server error:", error);
 					reject(error);
+				}
+			});
+
+			// Prevent connection errors from crashing the server
+			this.server.on("clientError", (error: any, socket) => {
+				if (error.code === "ECONNRESET" || error.code === "EPIPE") {
+					// Client disconnected abruptly — normal behavior
+					return;
+				}
+				console.debug("[MCP HTTP] Client error:", error.code || error.message);
+				if (socket.writable) {
+					socket.end("HTTP/1.1 400 Bad Request\r\n\r\n");
 				}
 			});
 
@@ -124,6 +140,27 @@ export class McpHttpServer {
 	}
 
 	private async handleRequest(
+		req: http.IncomingMessage,
+		res: http.ServerResponse
+	): Promise<void> {
+		try {
+			return await this.handleRequestInner(req, res);
+		} catch (error) {
+			console.error("[MCP HTTP] Unhandled error in request handler:", error);
+			if (!res.headersSent) {
+				res.writeHead(500, { "Content-Type": "application/json" });
+				res.end(JSON.stringify({
+					jsonrpc: "2.0",
+					error: { code: -32603, message: "Internal server error" },
+					id: null,
+				}));
+			} else if (!res.destroyed) {
+				res.end();
+			}
+		}
+	}
+
+	private async handleRequestInner(
 		req: http.IncomingMessage,
 		res: http.ServerResponse
 	): Promise<void> {
@@ -193,13 +230,14 @@ export class McpHttpServer {
 		req: http.IncomingMessage,
 		res: http.ServerResponse
 	): Promise<void> {
-		// Validate Accept header: must accept both application/json and text/event-stream
-		const accept = req.headers.accept || "";
-		if (!accept.includes("application/json") || !accept.includes("text/event-stream")) {
+		// Validate Accept header: should accept text/event-stream (or */*)
+		// Be lenient — some clients (Claude Desktop) may not send both explicitly
+		const accept = req.headers.accept || "*/*";
+		if (!accept.includes("text/event-stream") && !accept.includes("*/*")) {
 			res.writeHead(406, { "Content-Type": "application/json" });
 			res.end(JSON.stringify({
 				jsonrpc: "2.0",
-				error: { code: -32000, message: "Not Acceptable: Client must accept both application/json and text/event-stream" },
+				error: { code: -32000, message: "Not Acceptable: Client must accept text/event-stream" },
 				id: null,
 			}));
 			return;
@@ -378,10 +416,21 @@ export class McpHttpServer {
 					}
 				};
 
-				this.config.onMessage(message as McpRequest, reply);
+				try {
+					this.config.onMessage(message as McpRequest, reply);
+				} catch (error) {
+					console.error(`[MCP HTTP] Error processing request ${message.method}:`, error);
+					reply({
+						error: { code: -32603, message: `Internal error: ${error?.message || "unknown"}` },
+					});
+				}
 			} else if (message.method) {
 				// Notification — just process, no response needed
-				this.config.onMessage(message as McpRequest, () => {});
+				try {
+					this.config.onMessage(message as McpRequest, () => {});
+				} catch (error) {
+					console.error(`[MCP HTTP] Error processing notification ${message.method}:`, error);
+				}
 			}
 		}
 	}
@@ -679,10 +728,19 @@ export class McpHttpServer {
 	}
 
 	private async readRequestBody(req: http.IncomingMessage): Promise<string> {
+		const MAX_BODY_SIZE = 10 * 1024 * 1024; // 10MB
 		return new Promise((resolve, reject) => {
 			let body = "";
-			req.on("data", (chunk) => {
-				body += chunk.toString();
+			let size = 0;
+			req.on("data", (chunk: Buffer | string) => {
+				const str = chunk.toString();
+				size += str.length;
+				if (size > MAX_BODY_SIZE) {
+					req.destroy();
+					reject(new Error("Request body too large"));
+					return;
+				}
+				body += str;
 			});
 			req.on("end", () => {
 				resolve(body);

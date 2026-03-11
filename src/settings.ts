@@ -10,6 +10,7 @@ export interface ClaudeCodeSettings {
 	enableHttpServer: boolean;
 	enableEmbeddedTerminal: boolean;
 	maxTerminalSessions: number;
+	manageClaudeignore: boolean;
 }
 
 export const DEFAULT_SETTINGS: ClaudeCodeSettings = {
@@ -20,6 +21,7 @@ export const DEFAULT_SETTINGS: ClaudeCodeSettings = {
 	enableHttpServer: true,
 	enableEmbeddedTerminal: true,
 	maxTerminalSessions: 4,
+	manageClaudeignore: true,
 };
 
 export class ClaudeCodeSettingTab extends PluginSettingTab {
@@ -112,6 +114,26 @@ export class ClaudeCodeSettingTab extends PluginSettingTab {
 					}
 				});
 			});
+
+		// Vault Integration Section
+		containerEl.createEl("h3", { text: "Vault Integration" });
+
+		new Setting(containerEl)
+			.setName("Manage .claudeignore")
+			.setDesc(
+				"Automatically create and maintain a .claudeignore file in the vault root to prevent Claude Code from scanning heavy directories (.obsidian/plugins/*/node_modules/, workspace files, etc). This improves session stability."
+			)
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.manageClaudeignore)
+					.onChange(async (value) => {
+						this.plugin.settings.manageClaudeignore = value;
+						await this.plugin.saveSettings();
+						if (value) {
+							await this.plugin.ensureClaudeignore();
+						}
+					})
+			);
 
 		// Terminal Configuration Section
 		containerEl.createEl("h3", { text: "Terminal Configuration" });

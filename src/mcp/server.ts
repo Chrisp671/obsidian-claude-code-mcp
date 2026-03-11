@@ -50,7 +50,20 @@ export class McpServer {
 			console.debug(`[MCP] Total connected clients: ${this.connectedClients.size}`);
 
 			sock.on("message", (data) => {
-				this.handleMessage(sock, data.toString());
+				try {
+					this.handleMessage(sock, data.toString());
+				} catch (error) {
+					console.error("[MCP] Unhandled error in message handler:", error);
+					try {
+						sock.send(JSON.stringify({
+							jsonrpc: "2.0",
+							error: { code: -32603, message: "Internal server error" },
+							id: null,
+						}));
+					} catch {
+						// Socket may already be closed
+					}
+				}
 			});
 
 			sock.on("close", () => {

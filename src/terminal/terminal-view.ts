@@ -12,6 +12,9 @@ import type ClaudeMcpPlugin from "main";
 
 export const TERMINAL_VIEW_TYPE = "claude-terminal-view";
 
+// Track session numbers globally so each terminal gets a unique number
+let nextSessionNumber = 1;
+
 export class ClaudeTerminalView extends ItemView {
 	private terminal: Terminal;
 	private fitAddon: FitAddon;
@@ -20,15 +23,18 @@ export class ClaudeTerminalView extends ItemView {
 	private isDestroyed = false;
 	public app: App;
 	private plugin: ClaudeMcpPlugin;
+	public sessionNumber: number;
 
 	constructor(leaf: WorkspaceLeaf, plugin: ClaudeMcpPlugin) {
 		super(leaf);
 		this.plugin = plugin;
 		this.app = this.leaf.view.app;
+		this.sessionNumber = nextSessionNumber++;
 		this.terminal = new Terminal({
 			cursorBlink: true,
 			fontSize: 14,
 			fontFamily: "Monaco, Menlo, 'Ubuntu Mono', monospace",
+			allowProposedApi: true,
 		});
 		this.fitAddon = new FitAddon();
 		this.terminal.loadAddon(this.fitAddon);
@@ -39,7 +45,7 @@ export class ClaudeTerminalView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return "Claude Terminal";
+		return `Claude Terminal ${this.sessionNumber}`;
 	}
 
 	getIcon(): string {
@@ -111,6 +117,13 @@ export class ClaudeTerminalView extends ItemView {
 			// Allow xterm.js to process all other key events
 			return true;
 		});
+
+		// Voice-to-text / Wispr Flow support
+		// Voice-to-text tools often inject text via InputEvent (insertText/insertFromPaste)
+		// rather than through standard keyboard events. xterm.js's internal textarea
+		// may not capture these. We add a beforeinput listener to catch injected text
+		// and forward it to the PTY.
+		this.setupVoiceToTextSupport(terminalEl);
 
 		// Set up terminal resizing
 		this.terminal.onResize(({ cols, rows }) => {
@@ -387,6 +400,102 @@ export class ClaudeTerminalView extends ItemView {
 				);
 			}
 		}
+	}
+
+	private setupVoiceToTextSupport(terminalEl: HTMLElement): void {
+		// Find xterm's internal textarea (used for IME/composition input)
+		const xtermTextarea = terminalEl.querySelector(
+			".xterm-helper-textarea"
+		) as HTMLTextAreaElement | null;
+
+		if (!xtermTextarea) {
+			console.debug(
+				"[Terminal] Could not find xterm textarea for voice-to-text support"
+			);
+			return;
+		}
+
+		// Make the textarea more accessible to voice-to-text tools.
+		// Some tools require the textarea to have certain attributes to detect it.
+		xtermTextarea.setAttribute("aria-label", "Terminal input");
+		xtermTextarea.setAttribute("role", "textbox");
+
+		// Voice-to-text tools (VoiceDash, Wispr Flow, etc.) inject text through
+		// various mechanisms. We handle them all:
+		// 1. beforeinput - catches insertText/insertFromPaste before DOM changes
+		// 2. input - fallback for tools using document.execCommand('insertText')
+		let handledByBeforeInput = false;
+
+		xtermTextarea.addEventListener("beforeinput", (event: InputEvent) => {
+			if (
+				event.inputType === "insertText" ||
+				event.inputType === "insertFromPaste" ||
+				event.inputType === "insertFromDrop"
+			) {
+				const text = event.data;
+				if (text && this.pseudoterminal?.shell) {
+					// Check if xterm is currently in a composition - if so, let xterm handle it
+					const composingElement = terminalEl.querySelector(
+						".xterm-composition-view"
+					);
+					if (
+						composingElement &&
+						composingElement.textContent &&
+						composingElement.textContent.length > 0
+					) {
+						return;
+					}
+
+					handledByBeforeInput = true;
+					this.pseudoterminal.shell
+						.then((shell) => {
+							if (shell?.stdin?.writable) {
+								shell.stdin.write(text);
+							}
+						})
+						.catch((error) => {
+							console.error(
+								"[Terminal] Failed to write voice-to-text input:",
+								error
+							);
+						});
+				}
+			}
+		});
+
+		// Fallback: catch text injected via execCommand or other methods
+		// that may not fire beforeinput in all environments
+		xtermTextarea.addEventListener("input", (event: Event) => {
+			if (handledByBeforeInput) {
+				handledByBeforeInput = false;
+				return;
+			}
+
+			const inputEvent = event as InputEvent;
+			if (
+				inputEvent.inputType === "insertText" ||
+				inputEvent.inputType === "insertFromPaste" ||
+				inputEvent.inputType === "insertFromDrop"
+			) {
+				const text = inputEvent.data;
+				if (text && this.pseudoterminal?.shell) {
+					this.pseudoterminal.shell
+						.then((shell) => {
+							if (shell?.stdin?.writable) {
+								shell.stdin.write(text);
+							}
+						})
+						.catch((error) => {
+							console.error(
+								"[Terminal] Failed to write voice-to-text input (fallback):",
+								error
+							);
+						});
+				}
+			}
+		});
+
+		console.debug("[Terminal] Voice-to-text support initialized (VoiceDash/Wispr compatible)");
 	}
 
 	public focusTerminal(): void {

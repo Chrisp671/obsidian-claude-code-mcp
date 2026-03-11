@@ -76,7 +76,11 @@ export class McpHandlers {
 				return this.handlePromptsList(req, reply);
 
 			case "ping":
-				return reply({ result: "pong" });
+				return reply({ result: {} });
+
+			case "notifications/initialized":
+				// Client acknowledges initialization — no response needed
+				return;
 
 			// Legacy file operation methods (for backward compatibility)
 			case "readFile":
@@ -122,10 +126,23 @@ export class McpHandlers {
 			const { protocolVersion, capabilities, clientInfo } =
 				req.params || {};
 
+			// Negotiate protocol version
+			const supportedVersions = ["2025-03-26", "2024-11-05"];
+			let negotiatedVersion = "2025-03-26"; // default to latest
+			if (protocolVersion) {
+				if (supportedVersions.includes(protocolVersion)) {
+					negotiatedVersion = protocolVersion;
+				} else {
+					console.warn(`[MCP] Client requested unsupported protocol version: ${protocolVersion}, using ${negotiatedVersion}`);
+				}
+			}
+
+			console.debug(`[MCP] Client initialized: ${clientInfo?.name || "unknown"} (requested: ${protocolVersion || "unspecified"}, negotiated: ${negotiatedVersion})`);
+
 			// Respond with server capabilities
 			reply({
 				result: {
-					protocolVersion: "2024-11-05",
+					protocolVersion: negotiatedVersion,
 					capabilities: {
 						roots: {
 							listChanged: false,

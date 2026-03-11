@@ -34,6 +34,11 @@ export default class ClaudeMcpPlugin extends Plugin {
 			</svg>`
 		);
 
+		// Manage .claudeignore for session stability
+		if (this.settings.manageClaudeignore) {
+			await this.ensureClaudeignore();
+		}
+
 		// Conditionally initialize terminal features (lazy-loaded to save resources)
 		if (this.settings.enableEmbeddedTerminal) {
 			await this.initializeTerminalFeatures();
@@ -180,9 +185,9 @@ export default class ClaudeMcpPlugin extends Plugin {
 		if (!this.terminalRibbonIcon) {
 			this.terminalRibbonIcon = this.addRibbonIcon(
 				"claude-logo",
-				"Toggle Claude Terminal",
+				"New Claude Terminal",
 				() => {
-					this.toggleClaudeTerminal();
+					this.newClaudeTerminal();
 				}
 			);
 		}
@@ -218,6 +223,12 @@ export default class ClaudeMcpPlugin extends Plugin {
 				callback: () => this.toggleClaudeTerminal(),
 				hotkeys: [{ modifiers: ["Ctrl"], key: "`" }],
 			});
+
+			this.addCommand({
+				id: "new-claude-terminal",
+				name: "New Claude Terminal Session",
+				callback: () => this.newClaudeTerminal(),
+			});
 		} catch (error) {
 			console.error(
 				"[Terminal] Failed to initialize terminal features:",
@@ -238,25 +249,30 @@ export default class ClaudeMcpPlugin extends Plugin {
 			}
 
 			// Dynamic import to get terminal constants
-			const { ClaudeTerminalView, TERMINAL_VIEW_TYPE } = await import(
+			const { TERMINAL_VIEW_TYPE } = await import(
 				"./src/terminal/terminal-view"
 			);
 
-			// Check if terminal is already open
-			const existingLeaf =
-				this.app.workspace.getLeavesOfType(TERMINAL_VIEW_TYPE)[0];
-			if (existingLeaf) {
-				// Check if the terminal leaf is currently active
-				const isActive = this.app.workspace.activeLeaf === existingLeaf;
-				if (isActive) {
-					// Terminal is active - close it
-					existingLeaf.detach();
+			// Check if any terminal is already open
+			const existingLeaves =
+				this.app.workspace.getLeavesOfType(TERMINAL_VIEW_TYPE);
+
+			if (existingLeaves.length > 0) {
+				// Find the currently active terminal, if any
+				const activeTerminal = existingLeaves.find(
+					(leaf) => this.app.workspace.activeLeaf === leaf
+				);
+
+				if (activeTerminal) {
+					// Active terminal - close it
+					activeTerminal.detach();
 					return;
 				} else {
-					// Terminal exists but isn't active - focus it
-					this.app.workspace.revealLeaf(existingLeaf);
+					// Terminals exist but none active - focus the first one
+					const leaf = existingLeaves[0];
+					this.app.workspace.revealLeaf(leaf);
 					setTimeout(() => {
-						const terminalView = existingLeaf.view;
+						const terminalView = leaf.view;
 						if (
 							terminalView &&
 							typeof (terminalView as any).focusTerminal ===
@@ -269,24 +285,119 @@ export default class ClaudeMcpPlugin extends Plugin {
 				}
 			}
 
-			// Create new terminal
-			const leaf = this.app.workspace.getLeaf("split");
-			await leaf.setViewState({ type: TERMINAL_VIEW_TYPE });
-			this.app.workspace.revealLeaf(leaf);
-
-			// Focus the terminal after a brief delay to ensure it's ready
-			setTimeout(() => {
-				const terminalView = leaf.view;
-				if (
-					terminalView &&
-					typeof (terminalView as any).focusTerminal === "function"
-				) {
-					(terminalView as any).focusTerminal();
-				}
-			}, 150);
+			// No terminals open - create one
+			await this.createTerminalSession();
 		} catch (error) {
 			console.error("[Terminal] Failed to toggle terminal:", error);
 			new Notice("Failed to toggle Claude Terminal");
+		}
+	}
+
+	private async newClaudeTerminal(): Promise<void> {
+		try {
+			if (!this.settings.enableEmbeddedTerminal) {
+				new Notice(
+					"Embedded terminal is disabled. Enable it in settings to use this feature."
+				);
+				return;
+			}
+
+			const { TERMINAL_VIEW_TYPE } = await import(
+				"./src/terminal/terminal-view"
+			);
+
+			// Check if we've hit the max sessions limit
+			const existingLeaves =
+				this.app.workspace.getLeavesOfType(TERMINAL_VIEW_TYPE);
+			const maxSessions = this.settings.maxTerminalSessions || 4;
+
+			if (existingLeaves.length >= maxSessions) {
+				new Notice(
+					`Maximum ${maxSessions} terminal sessions reached. Close one to open a new one.`
+				);
+				return;
+			}
+
+			await this.createTerminalSession();
+		} catch (error) {
+			console.error("[Terminal] Failed to create new terminal:", error);
+			new Notice("Failed to create new Claude Terminal");
+		}
+	}
+
+	private async createTerminalSession(): Promise<void> {
+		const { TERMINAL_VIEW_TYPE } = await import(
+			"./src/terminal/terminal-view"
+		);
+
+		const leaf = this.app.workspace.getLeaf("split");
+		await leaf.setViewState({ type: TERMINAL_VIEW_TYPE });
+		this.app.workspace.revealLeaf(leaf);
+
+		// Focus the terminal after a brief delay to ensure it's ready
+		setTimeout(() => {
+			const terminalView = leaf.view;
+			if (
+				terminalView &&
+				typeof (terminalView as any).focusTerminal === "function"
+			) {
+				(terminalView as any).focusTerminal();
+			}
+		}, 150);
+	}
+
+	/* ---------------- .claudeignore management ---------------- */
+
+	async ensureClaudeignore(): Promise<void> {
+		const MANAGED_MARKER = "# Managed by obsidian-claude-code-mcp";
+		const ESSENTIAL_ENTRIES = [
+			".obsidian/plugins/*/node_modules/",
+			".obsidian/workspace.json",
+			".obsidian/workspace-mobile.json",
+			".obsidian/plugins/obsidian-excalidraw-plugin/",
+			"*conflict*",
+		];
+
+		try {
+			const filePath = ".claudeignore";
+			const adapter = this.app.vault.adapter;
+
+			if (await adapter.exists(filePath)) {
+				// File exists — merge missing essential entries
+				const existing = await adapter.read(filePath);
+				const existingLines = new Set(
+					existing.split("\n").map((l) => l.trim()).filter(Boolean)
+				);
+
+				const missing = ESSENTIAL_ENTRIES.filter(
+					(entry) => !existingLines.has(entry)
+				);
+
+				if (missing.length > 0) {
+					const appendBlock =
+						"\n\n" +
+						MANAGED_MARKER +
+						"\n" +
+						missing.join("\n") +
+						"\n";
+					await adapter.write(filePath, existing.trimEnd() + appendBlock);
+					console.debug(
+						`[MCP] Updated .claudeignore with ${missing.length} entries`
+					);
+				}
+			} else {
+				// Create new file
+				const content =
+					MANAGED_MARKER +
+					"\n" +
+					"# Excludes heavy directories to keep Claude Code sessions stable\n\n" +
+					ESSENTIAL_ENTRIES.join("\n") +
+					"\n";
+				await adapter.write(filePath, content);
+				console.debug("[MCP] Created .claudeignore");
+			}
+		} catch (error) {
+			console.warn("[MCP] Failed to manage .claudeignore:", error);
 		}
 	}
 

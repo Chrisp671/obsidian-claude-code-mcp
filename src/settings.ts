@@ -9,6 +9,8 @@ export interface ClaudeCodeSettings {
 	enableWebSocketServer: boolean;
 	enableHttpServer: boolean;
 	enableEmbeddedTerminal: boolean;
+	maxTerminalSessions: number;
+	manageClaudeignore: boolean;
 }
 
 export const DEFAULT_SETTINGS: ClaudeCodeSettings = {
@@ -18,6 +20,8 @@ export const DEFAULT_SETTINGS: ClaudeCodeSettings = {
 	enableWebSocketServer: true,
 	enableHttpServer: true,
 	enableEmbeddedTerminal: true,
+	maxTerminalSessions: 4,
+	manageClaudeignore: true,
 };
 
 export class ClaudeCodeSettingTab extends PluginSettingTab {
@@ -111,6 +115,26 @@ export class ClaudeCodeSettingTab extends PluginSettingTab {
 				});
 			});
 
+		// Vault Integration Section
+		containerEl.createEl("h3", { text: "Vault Integration" });
+
+		new Setting(containerEl)
+			.setName("Manage .claudeignore")
+			.setDesc(
+				"Automatically create and maintain a .claudeignore file in the vault root to prevent Claude Code from scanning heavy directories (.obsidian/plugins/*/node_modules/, workspace files, etc). This improves session stability."
+			)
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.manageClaudeignore)
+					.onChange(async (value) => {
+						this.plugin.settings.manageClaudeignore = value;
+						await this.plugin.saveSettings();
+						if (value) {
+							await this.plugin.ensureClaudeignore();
+						}
+					})
+			);
+
 		// Terminal Configuration Section
 		containerEl.createEl("h3", { text: "Terminal Configuration" });
 
@@ -141,6 +165,22 @@ export class ClaudeCodeSettingTab extends PluginSettingTab {
 			);
 
 		if (this.plugin.settings.enableEmbeddedTerminal) {
+			new Setting(containerEl)
+				.setName("Max terminal sessions")
+				.setDesc(
+					"Maximum number of concurrent terminal sessions (1-4). Each session runs its own shell and Claude instance."
+				)
+				.addSlider((slider) =>
+					slider
+						.setLimits(1, 4, 1)
+						.setValue(this.plugin.settings.maxTerminalSessions)
+						.setDynamicTooltip()
+						.onChange(async (value) => {
+							this.plugin.settings.maxTerminalSessions = value;
+							await this.plugin.saveSettings();
+						})
+				);
+
 			new Setting(containerEl)
 				.setName("Auto-close terminal when Claude exits")
 				.setDesc(
@@ -241,8 +281,9 @@ export class ClaudeCodeSettingTab extends PluginSettingTab {
 				cls: "status-details",
 			});
 			httpDetails.innerHTML = `
-				<div>• SSE Stream: <code>http://localhost:${serverInfo.httpPort}/sse</code></div>
-				<div>• Add to Claude Desktop config: <code>"url": "http://localhost:${serverInfo.httpPort}/sse"</code></div>
+				<div>• Streamable HTTP: <code>http://localhost:${serverInfo.httpPort}/mcp</code></div>
+				<div>• Add to Claude Desktop config: <code>"url": "http://localhost:${serverInfo.httpPort}/mcp"</code></div>
+				<div>• Legacy SSE: <code>http://localhost:${serverInfo.httpPort}/sse</code> (deprecated)</div>
 			`;
 		} else if (!this.plugin.settings.enableHttpServer) {
 			httpStatus.innerHTML = `

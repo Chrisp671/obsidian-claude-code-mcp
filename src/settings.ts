@@ -9,6 +9,7 @@ export interface ClaudeCodeSettings {
 	enableWebSocketServer: boolean;
 	enableHttpServer: boolean;
 	enableEmbeddedTerminal: boolean;
+	maxTerminalSessions: number;
 }
 
 export const DEFAULT_SETTINGS: ClaudeCodeSettings = {
@@ -18,6 +19,7 @@ export const DEFAULT_SETTINGS: ClaudeCodeSettings = {
 	enableWebSocketServer: true,
 	enableHttpServer: true,
 	enableEmbeddedTerminal: true,
+	maxTerminalSessions: 4,
 };
 
 export class ClaudeCodeSettingTab extends PluginSettingTab {
@@ -141,6 +143,22 @@ export class ClaudeCodeSettingTab extends PluginSettingTab {
 			);
 
 		if (this.plugin.settings.enableEmbeddedTerminal) {
+			new Setting(containerEl)
+				.setName("Max terminal sessions")
+				.setDesc(
+					"Maximum number of concurrent terminal sessions (1-4). Each session runs its own shell and Claude instance."
+				)
+				.addSlider((slider) =>
+					slider
+						.setLimits(1, 4, 1)
+						.setValue(this.plugin.settings.maxTerminalSessions)
+						.setDynamicTooltip()
+						.onChange(async (value) => {
+							this.plugin.settings.maxTerminalSessions = value;
+							await this.plugin.saveSettings();
+						})
+				);
+
 			new Setting(containerEl)
 				.setName("Auto-close terminal when Claude exits")
 				.setDesc(

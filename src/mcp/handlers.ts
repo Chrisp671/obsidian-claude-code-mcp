@@ -76,7 +76,7 @@ export class McpHandlers {
 				return this.handlePromptsList(req, reply);
 
 			case "ping":
-				return reply({ result: "pong" });
+				return reply({ result: {} });
 
 			// Legacy file operation methods (for backward compatibility)
 			case "readFile":
@@ -121,6 +121,15 @@ export class McpHandlers {
 		try {
 			const { protocolVersion, capabilities, clientInfo } =
 				req.params || {};
+
+			// Validate protocol version if provided
+			if (protocolVersion && protocolVersion !== "2024-11-05") {
+				console.warn(`[MCP] Client requested unsupported protocol version: ${protocolVersion}`);
+				// Still respond — the spec says server should return its own version
+				// and the client can decide whether to continue
+			}
+
+			console.debug(`[MCP] Client initialized: ${clientInfo?.name || "unknown"} (protocol: ${protocolVersion || "unspecified"})`);
 
 			// Respond with server capabilities
 			reply({

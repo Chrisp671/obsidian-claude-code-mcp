@@ -172,7 +172,18 @@ export class McpServer {
 			req = JSON.parse(raw);
 		} catch {
 			console.debug("[MCP] Invalid JSON received");
-			return; // ignore invalid JSON
+			sock.send(JSON.stringify({
+				jsonrpc: "2.0",
+				error: { code: -32700, message: "Parse error" },
+				id: null,
+			}));
+			return;
+		}
+
+		// Notifications (no id) don't expect a response
+		if (req.id === undefined) {
+			this.config.onMessage(sock, req);
+			return;
 		}
 
 		this.config.onMessage(sock, req);

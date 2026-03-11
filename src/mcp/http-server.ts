@@ -11,8 +11,12 @@ interface HttpReplyFunction {
 interface Session {
 	id: string;
 	createdAt: number;
+	lastAccessedAt: number;
 	streams: Set<http.ServerResponse>;
 }
+
+const SESSION_TTL_MS = 60 * 60 * 1000; // 1 hour
+const SESSION_CLEANUP_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
 interface SSEStream {
 	response: http.ServerResponse;
@@ -33,6 +37,7 @@ export class McpHttpServer {
 	private sessions: Map<string, Session> = new Map();
 	private activeStreams: Set<SSEStream> = new Set();
 	private eventIdCounter = 0;
+	private cleanupInterval: ReturnType<typeof setInterval> | null = null;
 
 	constructor(config?: McpHttpServerConfig) {
 		this.config = config || {
@@ -60,12 +65,24 @@ export class McpHttpServer {
 			this.server.listen(port, "127.0.0.1", () => {
 				this.port = (this.server.address() as any)?.port || port;
 				console.log(`[MCP HTTP] Server started on port ${this.port}`);
+
+				// Start periodic session cleanup
+				this.cleanupInterval = setInterval(() => {
+					this.cleanupExpiredSessions();
+				}, SESSION_CLEANUP_INTERVAL_MS);
+
 				resolve(this.port);
 			});
 		});
 	}
 
 	stop(): void {
+		// Stop session cleanup timer
+		if (this.cleanupInterval) {
+			clearInterval(this.cleanupInterval);
+			this.cleanupInterval = null;
+		}
+
 		// Close all active SSE streams
 		for (const stream of this.activeStreams) {
 			stream.response.end();
@@ -187,15 +204,21 @@ export class McpHttpServer {
 		const accept = req.headers.accept || "";
 		if (!accept.includes("text/event-stream")) {
 			res.writeHead(406, { "Content-Type": "application/json" });
-			res.end(JSON.stringify({ error: "Must accept text/event-stream" }));
+			res.end(JSON.stringify({
+				jsonrpc: "2.0",
+				error: { code: -32600, message: "Accept header must include text/event-stream" },
+				id: null,
+			}));
 			return;
 		}
 
 		// Create new session
 		const sessionId = crypto.randomUUID();
+		const now = Date.now();
 		const session: Session = {
 			id: sessionId,
-			createdAt: Date.now(),
+			createdAt: now,
+			lastAccessedAt: now,
 			streams: new Set([res]),
 		};
 		this.sessions.set(sessionId, session);
@@ -255,11 +278,16 @@ export class McpHttpServer {
 		// Validate session
 		if (!sessionId || !this.sessions.has(sessionId)) {
 			res.writeHead(404, { "Content-Type": "application/json" });
-			res.end(JSON.stringify({ error: "Session not found" }));
+			res.end(JSON.stringify({
+				jsonrpc: "2.0",
+				error: { code: -32001, message: "Session not found" },
+				id: null,
+			}));
 			return;
 		}
 
 		const session = this.sessions.get(sessionId)!;
+		session.lastAccessedAt = Date.now();
 		const body = await this.readRequestBody(req);
 		let messages: any[];
 
@@ -268,7 +296,11 @@ export class McpHttpServer {
 			messages = Array.isArray(parsed) ? parsed : [parsed];
 		} catch (error) {
 			res.writeHead(400, { "Content-Type": "application/json" });
-			res.end(JSON.stringify({ error: "Invalid JSON" }));
+			res.end(JSON.stringify({
+				jsonrpc: "2.0",
+				error: { code: -32700, message: "Parse error" },
+				id: null,
+			}));
 			return;
 		}
 
@@ -296,7 +328,11 @@ export class McpHttpServer {
 		);
 		if (!stream) {
 			res.writeHead(410, { "Content-Type": "application/json" });
-			res.end(JSON.stringify({ error: "SSE connection lost" }));
+			res.end(JSON.stringify({
+				jsonrpc: "2.0",
+				error: { code: -32000, message: "SSE connection lost" },
+				id: null,
+			}));
 			return;
 		}
 
@@ -377,6 +413,28 @@ export class McpHttpServer {
 			"Content-Type, Accept, Last-Event-ID"
 		);
 		res.setHeader("Access-Control-Max-Age", "86400");
+	}
+
+	private cleanupExpiredSessions(): void {
+		const now = Date.now();
+		for (const [id, session] of this.sessions) {
+			if (now - session.lastAccessedAt > SESSION_TTL_MS) {
+				// Close associated streams
+				for (const stream of this.activeStreams) {
+					if (stream.sessionId === id && !stream.response.destroyed) {
+						stream.response.end();
+					}
+				}
+				// Remove streams for this session
+				for (const stream of this.activeStreams) {
+					if (stream.sessionId === id) {
+						this.activeStreams.delete(stream);
+					}
+				}
+				this.sessions.delete(id);
+				console.debug(`[MCP HTTP] Cleaned up expired session ${id}`);
+			}
+		}
 	}
 
 	private validateOrigin(req: http.IncomingMessage): boolean {

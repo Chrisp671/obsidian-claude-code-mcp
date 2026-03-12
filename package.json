@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-claude-code-mcp-chrisp671",
-	"version": "1.2.2",
+	"version": "1.2.3",
 	"description": "Run AI agent terminals in your vault and connect external tools through MCP.",
 	"main": "main.js",
 	"scripts": {

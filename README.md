@@ -46,6 +46,30 @@ pip install pywinpty
 
 No extra packages needed. The terminal uses Python's built-in `pty` and `selectors` modules from the standard library.
 
+## Installation
+
+### Option 1: BRAT (recommended)
+
+If this fork is not yet available in the official Obsidian community plugin directory, the easiest install path is BRAT.
+
+1. Install the `BRAT` plugin from Obsidian's community plugins browser.
+2. Run the command `BRAT: Add a beta plugin for testing`.
+3. Enter this repository URL: `https://github.com/Chrisp671/obsidian-claude-code-mcp`
+4. Enable `Agent Terminal MCP` in Obsidian's community plugins settings.
+5. Use BRAT to pull future updates from new GitHub releases.
+
+### Option 2: Manual install from a GitHub release
+
+1. Download `manifest.json`, `main.js`, and `styles.css` from the latest GitHub release.
+2. Create this folder inside your vault if it does not already exist: `.obsidian/plugins/claude-code-mcp-chrisp671/`
+3. Copy the three release files into that folder.
+4. In Obsidian, reload community plugins or restart the app.
+5. Enable `Agent Terminal MCP` in **Settings -> Community Plugins**.
+
+### CLI prerequisites
+
+If you want to launch agent terminals such as Claude, Kimi, or Codex from inside Obsidian, install the corresponding CLI on the same machine and make sure it is available on your shell `PATH`.
+
 ## Embedded Terminal
 
 The plugin includes a built-in terminal that runs directly inside Obsidian.

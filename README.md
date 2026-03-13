@@ -48,6 +48,8 @@ No extra packages needed. The terminal uses Python's built-in `pty` and `selecto
 
 ## Installation
 
+For a short shareable setup guide, see [INSTALL.md](INSTALL.md).
+
 ### Option 1: BRAT (recommended)
 
 If this fork is not yet available in the official Obsidian community plugin directory, the easiest install path is BRAT.

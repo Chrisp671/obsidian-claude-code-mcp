@@ -102,7 +102,8 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 {
   "mcpServers": {
     "obsidian": {
-      "url": "http://localhost:22360/sse",
+      "command": "npx",
+      "args": ["mcp-remote", "http://localhost:22360/sse"],
       "env": {}
     }
   }

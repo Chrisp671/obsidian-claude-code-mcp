@@ -169,7 +169,8 @@ Claude Code automatically discovers and connects to Obsidian vaults through WebS
     {
     	"mcpServers": {
     		"obsidian": {
-    			"url": "http://localhost:YOUR_PORT/sse",
+    			"command": "npx",
+    			"args": ["mcp-remote", "http://localhost:YOUR_PORT/sse"],
     			"env": {}
     		}
     	}

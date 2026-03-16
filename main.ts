@@ -1,5 +1,5 @@
 /***********************************************************************
- * Claude MCP for Obsidian – main.ts
+ * Zenith Bridge for Obsidian – main.ts
  *
  * 1. `npm i ws node-pty @types/ws @types/node --save`
  * 2. Compile with the normal Obsidian plugin build pipeline
@@ -100,7 +100,7 @@ export default class ClaudeMcpPlugin extends Plugin {
 			const httpStatus = serverInfo.httpPort
 				? `HTTP: ${serverInfo.httpPort}`
 				: "HTTP: disabled";
-			new Notice(`Claude MCP running - ${wsStatus}, ${httpStatus}`);
+			new Notice(`Zenith Bridge running - ${wsStatus}, ${httpStatus}`);
 		} catch (error) {
 			console.error("[MCP] Failed to start server:", error);
 
@@ -114,7 +114,7 @@ export default class ClaudeMcpPlugin extends Plugin {
 					`Port ${this.settings.mcpHttpPort} is already in use. This might be because:\n` +
 						`• Another Obsidian vault is running this plugin\n` +
 						`• Another application is using this port\n\n` +
-						`Please configure a different port in Settings → Community Plugins → Agent Terminal MCP.`,
+						`Please configure a different port in Settings → Community Plugins → Zenith Bridge.`,
 					10000
 				);
 			} else if (
@@ -123,7 +123,7 @@ export default class ClaudeMcpPlugin extends Plugin {
 			) {
 				new Notice(
 					`Permission denied for port ${this.settings.mcpHttpPort}. ` +
-						`Try using a port above 1024 in Settings → Community Plugins → Agent Terminal MCP.`,
+						`Try using a port above 1024 in Settings → Community Plugins → Zenith Bridge.`,
 					8000
 				);
 			} else {
@@ -160,7 +160,7 @@ export default class ClaudeMcpPlugin extends Plugin {
 					`Port ${this.settings.mcpHttpPort} is already in use. This might be because:\n` +
 						`• Another Obsidian vault is running this plugin\n` +
 						`• Another application is using this port\n\n` +
-						`Please configure a different port in Settings → Community Plugins → Agent Terminal MCP.`,
+						`Please configure a different port in Settings → Community Plugins → Zenith Bridge.`,
 					10000
 				);
 			} else if (
@@ -169,7 +169,7 @@ export default class ClaudeMcpPlugin extends Plugin {
 			) {
 				new Notice(
 					`Permission denied for port ${this.settings.mcpHttpPort}. ` +
-						`Try using a port above 1024 in Settings → Community Plugins → Agent Terminal MCP.`,
+						`Try using a port above 1024 in Settings → Community Plugins → Zenith Bridge.`,
 					8000
 				);
 			} else {

@@ -217,7 +217,7 @@ export class ClaudeTerminalView extends ItemView {
 						error
 					);
 					new Notice(
-						"Terminal: PTY not available. Install Python 3.7+ (Windows: also run 'pip install pywinpty') for full terminal support.",
+						"Terminal pseudo-terminal not available. Install python 3.7+ for full terminal support.",
 						8000
 					);
 				}

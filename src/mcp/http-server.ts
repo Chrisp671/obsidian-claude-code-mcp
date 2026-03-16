@@ -41,10 +41,10 @@ export class McpHttpServer {
 	}
 
 	/** returns port number */
-	async start(port = 22360): Promise<number> {
+	start(port = 22360): Promise<number> {
 		return new Promise((resolve, reject) => {
 			this.server = http.createServer((req, res) => {
-				this.handleRequest(req, res);
+				void this.handleRequest(req, res);
 			});
 
 			this.server.on("error", (error: NodeJS.ErrnoException) => {
@@ -135,7 +135,7 @@ export class McpHttpServer {
 		// Route to appropriate endpoint
 		if (url.pathname === "/sse") {
 			if (req.method === "GET") {
-				await this.handleSSEConnection(req, res);
+				this.handleSSEConnection(req, res);
 			} else {
 				res.writeHead(405, { "Content-Type": "application/json" });
 				res.end(
@@ -265,7 +265,7 @@ export class McpHttpServer {
 		try {
 			const parsed = JSON.parse(body);
 			messages = Array.isArray(parsed) ? parsed : [parsed];
-		} catch (error) {
+		} catch {
 			res.writeHead(400, { "Content-Type": "application/json" });
 			res.end(JSON.stringify({ error: "Invalid JSON" }));
 			return;
@@ -308,10 +308,12 @@ export class McpHttpServer {
 
 		for (const request of messages) {
 			if (request.method && request.id !== undefined) {
+				const requestId = request.id;
+				const requestMethod = request.method;
 				const reply: HttpReplyFunction = (msg) => {
 					const response: McpResponse = {
 						jsonrpc: "2.0",
-						id: request.id as string | number,
+						id: requestId,
 						...msg,
 					};
 					const eventId = ++this.eventIdCounter;
@@ -339,13 +341,13 @@ export class McpHttpServer {
 				};
 
 				// Construct a proper McpRequest with required jsonrpc field
-			const mcpRequest: McpRequest = {
-				jsonrpc: "2.0",
-				id: request.id as string | number,
-				method: request.method as string,
-				params: (request.params as Record<string, unknown>) || {},
-			};
-			this.config.onMessage(mcpRequest, reply);
+				const mcpRequest: McpRequest = {
+					jsonrpc: "2.0",
+					id: requestId,
+					method: requestMethod,
+					params: (request.params as Record<string, unknown>) || {},
+				};
+				this.config.onMessage(mcpRequest, reply);
 			}
 		}
 

@@ -26,7 +26,7 @@ export class McpServer {
 		this.config = config;
 	}
 
-	async start(): Promise<number> {
+	start(): number {
 		// Generate a unique auth token for this session
 		this.authToken = crypto.randomUUID();
 
@@ -51,7 +51,7 @@ export class McpServer {
 			console.debug(`[MCP] Total connected clients: ${this.connectedClients.size}`);
 
 			sock.on("message", (data) => {
-				this.handleMessage(sock, data.toString());
+				this.handleMessage(sock, Buffer.isBuffer(data) ? data.toString("utf-8") : String(data));
 			});
 
 			sock.on("close", () => {

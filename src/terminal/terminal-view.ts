@@ -68,7 +68,7 @@ export class ClaudeTerminalView extends ItemView {
 		return { ...this.sessionState };
 	}
 
-	async setState(state: unknown, _result: ViewStateResult): Promise<void> {
+	setState(state: unknown, _result: ViewStateResult): Promise<void> {
 		const previousSessionId = this.sessionState.sessionId;
 		this.sessionState = this.normalizeSessionState(state);
 
@@ -78,6 +78,7 @@ export class ClaudeTerminalView extends ItemView {
 		}
 
 		terminalManager?.registerSessionLeaf(this.sessionState, this.leaf);
+		return Promise.resolve();
 	}
 
 	async onOpen(): Promise<void> {
@@ -156,7 +157,7 @@ export class ClaudeTerminalView extends ItemView {
 		}, 50);
 	}
 
-	async onClose(): Promise<void> {
+	onClose(): Promise<void> {
 		this.isDestroyed = true;
 		this.plugin.getTerminalManager()?.unregisterSession(this.sessionState.sessionId);
 
@@ -173,6 +174,8 @@ export class ClaudeTerminalView extends ItemView {
 		if (this.terminal) {
 			this.terminal.dispose();
 		}
+
+		return Promise.resolve();
 	}
 
 	onResize(): void {

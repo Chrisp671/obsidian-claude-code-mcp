@@ -291,7 +291,7 @@ export class GeneralTools {
 							});
 						}
 					} catch (error: unknown) {
-						reply({
+						return reply({
 							error: {
 								code: -32603,
 								message: `failed to view file/directory: ${(error as Error).message}`,
@@ -352,7 +352,7 @@ export class GeneralTools {
 							},
 						});
 					} catch (error: unknown) {
-						reply({
+						return reply({
 							error: {
 								code: -32603,
 								message: `failed to replace text: ${(error as Error).message}`,
@@ -406,7 +406,7 @@ export class GeneralTools {
 							},
 						});
 					} catch (error: unknown) {
-						reply({
+						return reply({
 							error: {
 								code: -32603,
 								message: `failed to create file: ${(error as Error).message}`,
@@ -463,7 +463,7 @@ export class GeneralTools {
 							},
 						});
 					} catch (error: unknown) {
-						reply({
+						return reply({
 							error: {
 								code: -32603,
 								message: `failed to insert text: ${(error as Error).message}`,
@@ -519,7 +519,7 @@ export class GeneralTools {
 							},
 						});
 					} catch (error: unknown) {
-						reply({
+						return reply({
 							error: {
 								code: -32603,
 								message: `Error executing function: ${(error as Error).message}`,

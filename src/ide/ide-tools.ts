@@ -78,8 +78,8 @@ export class IdeTools {
 					const { old_file_path, tab_name } = args || {};
 					
 					console.debug(`[MCP] OpenDiff requested for ${String(old_file_path)} (tab: ${String(tab_name)})`);
-					
-					return reply({
+
+					reply({
 						result: {
 							content: [
 								{
@@ -99,8 +99,8 @@ export class IdeTools {
 					const { tab_name } = args || {};
 					
 					console.debug(`[MCP] CloseTab requested for ${String(tab_name)}`);
-					
-					return reply({
+
+					reply({
 						result: {
 							content: [
 								{
@@ -118,8 +118,8 @@ export class IdeTools {
 					// Claude Code is trying to close all diff tabs, but Obsidian doesn't have the same tab concept
 					// Just acknowledge the request successfully
 					console.debug(`[MCP] CloseAllDiffTabs requested`);
-					
-					return reply({
+
+					reply({
 						result: {
 							content: [
 								{
@@ -144,7 +144,7 @@ export class IdeTools {
 							timestamp: new Date().toISOString(),
 						};
 
-						return reply({
+						reply({
 							result: {
 								diagnostics: [],
 								systemInfo: diagnostics,

@@ -121,7 +121,6 @@ export class ClaudeCodeSettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 
 		containerEl.empty();
-		new Setting(containerEl).setName("Claude Code settings").setHeading();
 
 		this.displayServerStatus(containerEl);
 		this.displayServerSettings(containerEl);
@@ -129,7 +128,7 @@ export class ClaudeCodeSettingTab extends PluginSettingTab {
 	}
 
 	private displayServerSettings(containerEl: HTMLElement): void {
-		new Setting(containerEl).setName("MCP server configuration").setHeading();
+		new Setting(containerEl).setName("Server configuration").setHeading();
 
 		new Setting(containerEl)
 			.setName("Enable WebSocket server")
@@ -148,9 +147,9 @@ export class ClaudeCodeSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Enable HTTP/SSE server")
+			.setName("Enable HTTP server")
 			.setDesc(
-				"Enable the HTTP server for external clients. Required for manual client configuration."
+				"Enable the HTTP server with server-sent events for external clients. Required for manual client configuration."
 			)
 			.addToggle((toggle) =>
 				toggle
@@ -182,7 +181,7 @@ export class ClaudeCodeSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					});
 
-				text.inputEl.addEventListener("blur", async () => {
+				text.inputEl.addEventListener("blur", () => {
 					const port = parseInt(text.getValue(), 10);
 					if (Number.isNaN(port) || port < 1024 || port > 65535) {
 						text.setValue(this.plugin.settings.mcpHttpPort.toString());
@@ -190,8 +189,9 @@ export class ClaudeCodeSettingTab extends PluginSettingTab {
 					}
 
 					if (this.plugin.settings.enableHttpServer) {
-						await this.plugin.restartMcpServer();
-						this.display();
+						void this.plugin.restartMcpServer().then(() => {
+							this.display();
+						});
 					}
 				});
 			});
@@ -480,14 +480,14 @@ export class ClaudeCodeSettingTab extends PluginSettingTab {
 		const statusSection = containerEl.createEl("div", {
 			cls: "mcp-server-status",
 		});
-		new Setting(statusSection).setName("MCP server status").setHeading();
+		new Setting(statusSection).setName("Server status").setHeading();
 
 		const serverInfo = this.plugin.mcpServer?.getServerInfo() || {};
 
 		const wsContainer = statusSection.createEl("div", {
 			cls: "server-status-item",
 		});
-		new Setting(wsContainer).setName("WebSocket server (Claude Code)").setHeading();
+		new Setting(wsContainer).setName("WebSocket server").setHeading();
 
 		const wsStatus = wsContainer.createEl("div", { cls: "status-line" });
 		if (this.plugin.settings.enableWebSocketServer && serverInfo.wsPort) {
@@ -521,7 +521,7 @@ export class ClaudeCodeSettingTab extends PluginSettingTab {
 		const httpContainer = statusSection.createEl("div", {
 			cls: "server-status-item",
 		});
-		new Setting(httpContainer).setName("MCP server (HTTP/SSE transport)").setHeading();
+		new Setting(httpContainer).setName("HTTP server").setHeading();
 
 		const httpStatus = httpContainer.createEl("div", {
 			cls: "status-line",

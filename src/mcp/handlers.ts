@@ -106,7 +106,7 @@ export class McpHandlers {
 			case "tools/call": {
 				// Use the appropriate tool registry based on request source
 				const toolRegistry = source === "ws" ? this.wsToolRegistry : this.httpToolRegistry;
-				return toolRegistry.handleToolCall(req, reply);
+				return await toolRegistry.handleToolCall(req, reply);
 			}
 
 			case "resources/list":

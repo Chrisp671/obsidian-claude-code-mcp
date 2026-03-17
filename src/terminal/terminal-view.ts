@@ -68,6 +68,7 @@ export class ClaudeTerminalView extends ItemView {
 		return { ...this.sessionState };
 	}
 
+	// eslint-disable-next-line @typescript-eslint/require-await -- Override of base class async method; no async work needed
 	async setState(state: unknown, _result: ViewStateResult): Promise<void> {
 		const previousSessionId = this.sessionState.sessionId;
 		this.sessionState = this.normalizeSessionState(state);
@@ -161,12 +162,14 @@ export class ClaudeTerminalView extends ItemView {
 		this.plugin.getTerminalManager()?.unregisterSession(this.sessionState.sessionId);
 
 		if (this.pseudoterminal) {
-			this.pseudoterminal.kill().catch((error: unknown) => {
+			try {
+				await this.pseudoterminal.kill();
+			} catch (error: unknown) {
 				console.error(
 					"[Terminal] Failed to kill pseudoterminal:",
 					error
 				);
-			});
+			}
 			this.pseudoterminal = null;
 		}
 

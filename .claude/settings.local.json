@@ -26,7 +26,22 @@
       "Bash(ls:*)",
       "Bash(mkdir:*)",
       "Bash(mv:*)",
-      "Bash(bun run:*)"
+      "Bash(bun run:*)",
+      "Bash(git fetch:*)",
+      "Bash(echo $GH_TOKEN)",
+      "Bash(gh auth:*)",
+      "Bash(git checkout:*)",
+      "Bash(git pull:*)",
+      "Bash(GIT_EDITOR=true git rebase --continue)",
+      "Bash(gh release:*)",
+      "Bash(node -e \"console.log\\(require\\(''./manifest.json''\\).description\\)\")",
+      "Bash(npm install:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr:*)",
+      "Bash(gh --version)",
+      "Bash(npx esbuild:*)"
     ],
     "deny": []
   }

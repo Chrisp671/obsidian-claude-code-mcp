@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith Bridge: The Final Upgrades</title>
+    <style>
+        body {
+            background-color: #050505;
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 { margin-bottom: 5px; color: #ffffff; text-align: center; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 2px;}
+        .subtitle { color: #8EC540; margin-bottom: 50px; font-weight: 500; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; text-align: center; max-width: 600px;}
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            max-width: 1000px;
+            width: 100%;
+        }
+        .card {
+            background: #111;
+            border-radius: 16px;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #222;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            transition: transform 0.3s, border-color 0.3s;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: #8EC540;
+        }
+        .icon-large {
+            width: 160px;
+            height: 160px;
+            color: #ffffff;
+            margin-bottom: 25px;
+        }
+        .icon-small {
+            width: 24px;
+            height: 24px;
+            color: #ffffff;
+            margin-bottom: 15px;
+            opacity: 0.8;
+            border: 1px dotted #444;
+            padding: 4px;
+        }
+        .title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 10px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .desc {
+            font-size: 0.9rem;
+            color: #888;
+            text-align: center;
+            line-height: 1.5;
+        }
+        .fusion-tag {
+            background: #FF6900;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>The Final Upgrades</h1>
+    <div class="subtitle">Fusing "Neon Build" & "Tracing Laser" with the 80s Masters</div>
+
+    <div class="grid">
+
+        <!-- Upgrade 1: Nagel's Tracing Laser -->
+        <div class="card">
+            <div class="fusion-tag">Tracing Laser × Patrick Nagel</div>
+            <div class="icon-large">
+                <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round">
+                  <polygon points="4,6 20,6 4,18 20,18" stroke="#32373C" stroke-width="4" stroke-linecap="butt" />
+                  <path d="M 4 6 L 20 6 L 4 18 L 20 18" stroke="#8EC540" stroke-width="4" stroke-dasharray="10 50" stroke-linecap="butt">
+                    <animate attributeName="stroke-dashoffset" from="60" to="0" dur="1.5s" repeatCount="indefinite" />
+                  </path>
+                  <path d="M 4 6 L 20 6 L 4 18 L 20 18" stroke="#9867C1" stroke-width="2" stroke-dasharray="20 40" stroke-dashoffset="10" stroke-linecap="butt">
+                    <animate attributeName="stroke-dashoffset" from="70" to="10" dur="1.5s" repeatCount="indefinite" />
+                  </path>
+                </svg>
+            </div>
+            <div class="icon-small">
+                 <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round">
+                  <polygon points="4,6 20,6 4,18 20,18" stroke="#32373C" stroke-width="3" stroke-linecap="butt" />
+                  <path d="M 4 6 L 20 6 L 4 18 L 20 18" stroke="#8EC540" stroke-width="3" stroke-dasharray="10 50" stroke-linecap="butt">
+                    <animate attributeName="stroke-dashoffset" from="60" to="0" dur="1.5s" repeatCount="indefinite" />
+                  </path>
+                  <path d="M 4 6 L 20 6 L 4 18 L 20 18" stroke="#9867C1" stroke-width="1.5" stroke-dasharray="20 40" stroke-dashoffset="10" stroke-linecap="butt">
+                    <animate attributeName="stroke-dashoffset" from="70" to="10" dur="1.5s" repeatCount="indefinite" />
+                  </path>
+                </svg>
+            </div>
+            <div class="title">The Razor Laser</div>
+            <div class="desc">Nagel's sharp minimalism applied to the Laser. Clean, hard-edged geometric lasers slice through a dark slate track, leaving precision green and purple cuts. No glowing—just pure sharpness.</div>
+        </div>
+
+        <!-- Upgrade 2: Saville's Tracing Laser -->
+        <div class="card">
+            <div class="fusion-tag">Tracing Laser × Peter Saville</div>
+            <div class="icon-large">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <g stroke-width="1.5">
+                    <path d="M 4 5 L 20 5 L 4 17 L 20 17" stroke="#32373C" />
+                    <path d="M 4 7 L 20 7 L 4 19 L 20 19" stroke="#32373C" />
+                  </g>
+                  <g stroke-linecap="round">
+                    <path d="M 4 5 L 20 5 L 4 17 L 20 17" stroke="#8EC540" stroke-width="2" stroke-dasharray="8 60">
+                      <animate attributeName="stroke-dashoffset" from="68" to="0" dur="1.6s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M 4 6 L 20 6 L 4 18 L 20 18" stroke="#FF6900" stroke-width="2" stroke-dasharray="8 60">
+                      <animate attributeName="stroke-dashoffset" from="68" to="0" dur="1.4s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M 4 7 L 20 7 L 4 19 L 20 19" stroke="#9867C1" stroke-width="2" stroke-dasharray="8 60">
+                      <animate attributeName="stroke-dashoffset" from="68" to="0" dur="1.8s" repeatCount="indefinite" />
+                    </path>
+                  </g>
+                </svg>
+            </div>
+            <div class="icon-small">
+                 <svg viewBox="0 0 24 24" fill="none">
+                  <g stroke-width="1">
+                    <path d="M 4 5 L 20 5 L 4 17 L 20 17" stroke="#32373C" />
+                    <path d="M 4 7 L 20 7 L 4 19 L 20 19" stroke="#32373C" />
+                  </g>
+                  <g stroke-linecap="round">
+                    <path d="M 4 5 L 20 5 L 4 17 L 20 17" stroke="#8EC540" stroke-width="1.5" stroke-dasharray="8 60">
+                      <animate attributeName="stroke-dashoffset" from="68" to="0" dur="1.6s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M 4 6 L 20 6 L 4 18 L 20 18" stroke="#FF6900" stroke-width="1.5" stroke-dasharray="8 60">
+                      <animate attributeName="stroke-dashoffset" from="68" to="0" dur="1.4s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M 4 7 L 20 7 L 4 19 L 20 19" stroke="#9867C1" stroke-width="1.5" stroke-dasharray="8 60">
+                      <animate attributeName="stroke-dashoffset" from="68" to="0" dur="1.8s" repeatCount="indefinite" />
+                    </path>
+                  </g>
+                </svg>
+            </div>
+            <div class="title">The Data Trace</div>
+            <div class="desc">Saville's pulsing data lines applied to the Laser. Instead of one thick line, multiple staggered data packets race independently down parallel tracks like fiber optic cables.</div>
+        </div>
+
+        <!-- Upgrade 3: Haring's Neon Build -->
+        <div class="card">
+            <div class="fusion-tag">Neon Build × Keith Haring</div>
+            <div class="icon-large">
+                <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <defs>
+                    <filter id="radiantGlow"><feGaussianBlur stdDeviation="1.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                  </defs>
+                  
+                  <!-- The Neon Build Z -->
+                  <path d="M 5 6 L 19 6 L 5 18 L 19 18" stroke="#8EC540" stroke-width="4" stroke-dasharray="60" stroke-dashoffset="60" filter="url(#radiantGlow)">
+                    <animate attributeName="stroke-dashoffset" values="60; 0; 0; 60; 60" dur="4s" keyTimes="0; 0.25; 0.6; 0.85; 1" repeatCount="indefinite" />
+                  </path>
+                  
+                  <!-- Radiant Action Lines (only appear when fully built) -->
+                  <g stroke="#9867C1" stroke-width="2">
+                     <animate attributeName="opacity" values="0; 0; 1; 1; 0; 0" dur="4s" keyTimes="0; 0.25; 0.26; 0.6; 0.61; 1" repeatCount="indefinite" />
+                     <line x1="2" y1="3" x2="4" y2="5"><animate attributeName="opacity" values="0;1;0" dur="0.2s" repeatCount="indefinite"/></line>
+                     <line x1="22" y1="3" x2="20" y2="5"><animate attributeName="opacity" values="1;0;1" dur="0.3s" repeatCount="indefinite"/></line>
+                     <line x1="2" y1="21" x2="4" y2="19"><animate attributeName="opacity" values="0;1;0" dur="0.25s" repeatCount="indefinite"/></line>
+                     <line x1="22" y1="21" x2="20" y2="19"><animate attributeName="opacity" values="1;0;1" dur="0.2s" repeatCount="indefinite"/></line>
+                  </g>
+                </svg>
+            </div>
+            <div class="icon-small">
+                 <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M 5 6 L 19 6 L 5 18 L 19 18" stroke="#8EC540" stroke-width="3" stroke-dasharray="60" stroke-dashoffset="60">
+                    <animate attributeName="stroke-dashoffset" values="60; 0; 0; 60; 60" dur="4s" keyTimes="0; 0.25; 0.6; 0.85; 1" repeatCount="indefinite" />
+                  </path>
+                  <g stroke="#9867C1" stroke-width="1.5">
+                     <animate attributeName="opacity" values="0; 0; 1; 1; 0; 0" dur="4s" keyTimes="0; 0.25; 0.26; 0.6; 0.61; 1" repeatCount="indefinite" />
+                     <line x1="2" y1="3" x2="4" y2="5"><animate attributeName="opacity" values="0;1;0" dur="0.2s" repeatCount="indefinite"/></line>
+                     <line x1="22" y1="3" x2="20" y2="5"><animate attributeName="opacity" values="1;0;1" dur="0.3s" repeatCount="indefinite"/></line>
+                     <line x1="2" y1="21" x2="4" y2="19"><animate attributeName="opacity" values="0;1;0" dur="0.25s" repeatCount="indefinite"/></line>
+                     <line x1="22" y1="21" x2="20" y2="19"><animate attributeName="opacity" values="1;0;1" dur="0.2s" repeatCount="indefinite"/></line>
+                  </g>
+                </svg>
+            </div>
+            <div class="title">The Action Build</div>
+            <div class="desc">Haring's pop-art energy applied to the Neon Build. The Z draws itself quickly, and the moment it finishes, thick purple action lines violently vibrate out of its corners to signify it's "live", before resetting.</div>
+        </div>
+
+        <!-- Upgrade 4: Sorayama's Neon Build -->
+        <div class="card">
+            <div class="fusion-tag">Neon Build × Hajime Sorayama</div>
+            <div class="icon-large">
+                <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round" stroke-linecap="round">
+                  <defs>
+                    <linearGradient id="chromeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stop-color="#EFEFEF"/>
+                      <stop offset="45%" stop-color="#888"/>
+                      <stop offset="50%" stop-color="#32373C"/>
+                      <stop offset="55%" stop-color="#666"/>
+                      <stop offset="100%" stop-color="#FFF"/>
+                    </linearGradient>
+                    <filter id="flareGlow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                  </defs>
+                  
+                  <path d="M 5 6 L 19 6 L 5 18 L 19 18" stroke="url(#chromeGrad)" stroke-width="5" stroke-dasharray="60" stroke-dashoffset="60">
+                    <animate attributeName="stroke-dashoffset" values="60; 0; 0; 60; 60" dur="4s" keyTimes="0; 0.25; 0.6; 0.85; 1" repeatCount="indefinite" />
+                  </path>
+
+                  <g filter="url(#flareGlow)">
+                     <animate attributeName="opacity" values="0; 0; 1; 1; 0; 0" dur="4s" keyTimes="0; 0.25; 0.3; 0.6; 0.65; 1" repeatCount="indefinite" />
+                     <line x1="0" y1="12" x2="24" y2="12" stroke="#9867C1" stroke-width="1.5" opacity="0.9">
+                       <animate attributeName="y1" values="6;20;6" dur="2s" repeatCount="indefinite" />
+                       <animate attributeName="y2" values="6;20;6" dur="2s" repeatCount="indefinite" />
+                     </line>
+                     <circle cx="12" cy="12" r="3" fill="#8EC540">
+                       <animate attributeName="cx" values="19;5;19" dur="2s" repeatCount="indefinite" />
+                       <animate attributeName="cy" values="6;18;6" dur="2s" repeatCount="indefinite" />
+                     </circle>
+                  </g>
+                </svg>
+            </div>
+            <div class="icon-small">
+                 <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round" stroke-linecap="round">
+                  <path d="M 5 6 L 19 6 L 5 18 L 19 18" stroke="url(#chromeGrad)" stroke-width="4" stroke-dasharray="60" stroke-dashoffset="60">
+                    <animate attributeName="stroke-dashoffset" values="60; 0; 0; 60; 60" dur="4s" keyTimes="0; 0.25; 0.6; 0.85; 1" repeatCount="indefinite" />
+                  </path>
+                  <g filter="url(#flareGlow)">
+                     <animate attributeName="opacity" values="0; 0; 1; 1; 0; 0" dur="4s" keyTimes="0; 0.25; 0.3; 0.6; 0.65; 1" repeatCount="indefinite" />
+                     <line x1="0" y1="12" x2="24" y2="12" stroke="#9867C1" stroke-width="1" opacity="0.9">
+                       <animate attributeName="y1" values="6;20;6" dur="2s" repeatCount="indefinite" />
+                       <animate attributeName="y2" values="6;20;6" dur="2s" repeatCount="indefinite" />
+                     </line>
+                     <circle cx="12" cy="12" r="2" fill="#8EC540">
+                       <animate attributeName="cx" values="19;5;19" dur="2s" repeatCount="indefinite" />
+                       <animate attributeName="cy" values="6;18;6" dur="2s" repeatCount="indefinite" />
+                     </circle>
+                  </g>
+                </svg>
+            </div>
+            <div class="title">The Chrome & Flare Build</div>
+            <div class="desc">Sorayama's hyper-reflective chrome applied to the Neon Build. The Z rapidly draws itself in thick metal. Upon completion, a massive green and purple lens flare glides along the diagonal.</div>
+        </div>
+
+    </div>
+
+</body>
+</html>

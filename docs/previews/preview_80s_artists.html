@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith Bridge: The 80s Masters Edition</title>
+    <style>
+        body {
+            background-color: #050505;
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 { margin-bottom: 5px; color: #ffffff; text-align: center; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 2px;}
+        .subtitle { color: #8EC540; margin-bottom: 50px; font-weight: 500; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; text-align: center; max-width: 600px;}
+        
+        .color-palette {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+        .swatch-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .swatch {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            border: 2px solid #333;
+        }
+        .hex { font-size: 0.8rem; color: #aaa; font-family: monospace; }
+        
+        .section-title { width: 100%; max-width: 1000px; text-align: left; margin: 40px 0 20px 0; border-bottom: 2px solid #333; padding-bottom: 10px; color: #FFF; text-transform: uppercase; font-weight: bold; font-size: 1.5rem; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            max-width: 1000px;
+            width: 100%;
+        }
+        .card {
+            background: #111;
+            border-radius: 16px;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #222;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            transition: transform 0.3s, border-color 0.3s;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: #8EC540;
+        }
+        .icon-large {
+            width: 160px;
+            height: 160px;
+            color: #ffffff;
+            margin-bottom: 25px;
+        }
+        .icon-small {
+            width: 24px;
+            height: 24px;
+            color: #ffffff;
+            margin-bottom: 15px;
+            opacity: 0.8;
+            border: 1px dotted #444;
+            padding: 4px;
+        }
+        .title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 10px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .desc {
+            font-size: 0.9rem;
+            color: #888;
+            text-align: center;
+            line-height: 1.5;
+        }
+        .tag {
+            background: #FF6900;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Zenith Bridge: 80s Masters Edition</h1>
+    <div class="subtitle">Using the Official Strategic Profits Palette</div>
+
+    <div class="color-palette">
+        <div class="swatch-container">
+            <div class="swatch" style="background-color: #8EC540;"></div>
+            <div class="hex">#8EC540</div>
+        </div>
+        <div class="swatch-container">
+            <div class="swatch" style="background-color: #9867C1;"></div>
+            <div class="hex">#9867C1</div>
+        </div>
+        <div class="swatch-container">
+            <div class="swatch" style="background-color: #FF6900;"></div>
+            <div class="hex">#FF6900</div>
+        </div>
+        <div class="swatch-container">
+            <div class="swatch" style="background-color: #32373C;"></div>
+            <div class="hex">#32373C</div>
+        </div>
+    </div>
+
+
+    <div class="section-title">The 80s Vanguard Designer Artists</div>
+    <div class="grid">
+
+        <!-- Keith Haring -->
+        <div class="card">
+            <div class="tag">Keith Haring (Pop Art)</div>
+            <div class="icon-large">
+                <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round" stroke-linecap="round">
+                  <!-- Radiant action lines -->
+                  <g stroke="#9867C1" stroke-width="2">
+                     <line x1="2" y1="4" x2="4" y2="6"><animate attributeName="opacity" values="0;1;0" dur="0.8s" repeatCount="indefinite"/></line>
+                     <line x1="12" y1="1" x2="12" y2="4"><animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/></line>
+                     <line x1="22" y1="4" x2="20" y2="6"><animate attributeName="opacity" values="0;1;0" dur="0.8s" repeatCount="indefinite"/></line>
+                     <line x1="22" y1="20" x2="20" y2="18"><animate attributeName="opacity" values="1;0;1" dur="0.9s" repeatCount="indefinite"/></line>
+                     <line x1="2" y1="20" x2="4" y2="18"><animate attributeName="opacity" values="1;0;1" dur="0.9s" repeatCount="indefinite"/></line>
+                  </g>
+                  <!-- Blobby Z shape -->
+                  <path d="M 6 6 L 18 6 C 19 6, 20 7, 19 8 L 7 18 C 6 19, 5 18, 5 17 L 17 7 L 7 7 C 6 7, 5 6, 6 6 Z" fill="#8EC540" stroke="#32373C" stroke-width="2">
+                    <animate attributeName="transform" values="scale(1) translate(0,0); scale(1.05) translate(-0.5,-0.5); scale(1) translate(0,0)" dur="1.2s" repeatCount="indefinite"/>
+                  </path>
+                </svg>
+            </div>
+            <div class="icon-small">
+                 <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round" stroke-linecap="round">
+                  <g stroke="#9867C1" stroke-width="2">
+                     <line x1="2" y1="4" x2="4" y2="6"><animate attributeName="opacity" values="0;1;0" dur="0.8s" repeatCount="indefinite"/></line>
+                     <line x1="12" y1="1" x2="12" y2="4"><animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/></line>
+                     <line x1="22" y1="4" x2="20" y2="6"><animate attributeName="opacity" values="0;1;0" dur="0.8s" repeatCount="indefinite"/></line>
+                     <line x1="22" y1="20" x2="20" y2="18"><animate attributeName="opacity" values="1;0;1" dur="0.9s" repeatCount="indefinite"/></line>
+                     <line x1="2" y1="20" x2="4" y2="18"><animate attributeName="opacity" values="1;0;1" dur="0.9s" repeatCount="indefinite"/></line>
+                  </g>
+                  <path d="M 6 6 L 18 6 C 19 6, 20 7, 19 8 L 7 18 C 6 19, 5 18, 5 17 L 17 7 L 7 7 C 6 7, 5 6, 6 6 Z" fill="#8EC540" stroke="#32373C" stroke-width="1.5">
+                    <animate attributeName="transform" values="scale(1) translate(0,0); scale(1.05) translate(-0.5,-0.5); scale(1) translate(0,0)" dur="1.2s" repeatCount="indefinite"/>
+                  </path>
+                </svg>
+            </div>
+            <div class="title">The Radiant Z</div>
+            <div class="desc">Bold, thick marker outlines filled with solid Strategic Green. Accompanied by Purple energetic "radiant" action lines that vibrate and bounce.</div>
+        </div>
+
+        <!-- Basquiat -->
+        <div class="card">
+            <div class="tag">J.M. Basquiat (Neo-Expressionism)</div>
+            <div class="icon-large">
+                <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round" stroke-linecap="round">
+                  <!-- Floating Crown -->
+                  <path d="M 9 6 L 10 3 L 12 5 L 14 3 L 15 6 Z" stroke="#FF6900" stroke-width="1.5" fill="none">
+                    <animate attributeName="transform" values="translate(0,0) rotate(0 12 5); translate(0,-2) rotate(-5 12 5); translate(0,0) rotate(5 12 5)" dur="2s" repeatCount="indefinite"/>
+                  </path>
+                  <!-- Frantic scribbles -->
+                  <path d="M 4 8 L 20 9 L 3 19 L 21 21 M 5 7 L 18 8 L 5 18 M 19 7 L 4 20" stroke="#32373C" stroke-width="2" />
+                  <path d="M 5 9 L 17 11 L 6 17 L 19 19" stroke="#8EC540" stroke-width="1.5" stroke-dasharray="2 10">
+                    <animate attributeName="stroke-dashoffset" values="12; 0" dur="0.2s" repeatCount="indefinite"/>
+                  </path>
+                  <path d="M 6 8 L 19 10 L 4 19 L 20 20" stroke="#9867C1" stroke-width="1.5" stroke-dasharray="5 5">
+                    <animate attributeName="stroke-dashoffset" values="10; 0" dur="0.3s" repeatCount="indefinite"/>
+                  </path>
+                </svg>
+            </div>
+            <div class="icon-small">
+                 <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round" stroke-linecap="round">
+                  <path d="M 9 6 L 10 3 L 12 5 L 14 3 L 15 6 Z" stroke="#FF6900" stroke-width="1.5" fill="none">
+                    <animate attributeName="transform" values="translate(0,0) rotate(0 12 5); translate(0,-2) rotate(-5 12 5); translate(0,0) rotate(5 12 5)" dur="2s" repeatCount="indefinite"/>
+                  </path>
+                  <path d="M 4 8 L 20 9 L 3 19 L 21 21 M 5 7 L 18 8 L 5 18 M 19 7 L 4 20" stroke="#32373C" stroke-width="1.5" />
+                  <path d="M 5 9 L 17 11 L 6 17 L 19 19" stroke="#8EC540" stroke-width="1" stroke-dasharray="2 10">
+                    <animate attributeName="stroke-dashoffset" values="12; 0" dur="0.2s" repeatCount="indefinite"/>
+                  </path>
+                  <path d="M 6 8 L 19 10 L 4 19 L 20 20" stroke="#9867C1" stroke-width="1" stroke-dasharray="5 5">
+                    <animate attributeName="stroke-dashoffset" values="10; 0" dur="0.3s" repeatCount="indefinite"/>
+                  </path>
+                </svg>
+            </div>
+            <div class="title">Crowned Scribble</div>
+            <div class="desc">Raw and frantic. Real-time animated scribbles in Purple and Green trace over a violent, chaotic base Z. Topped with a bobbing Orange crown.</div>
+        </div>
+
+        <!-- Memphis Group -->
+        <div class="card">
+            <div class="tag">Memphis Group (MTV Style)</div>
+            <div class="icon-large">
+                <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round" stroke-linecap="round">
+                  <circle cx="4" cy="4" r="0.5" fill="#32373C" /><circle cx="20" cy="4" r="0.5" fill="#32373C" /><circle cx="4" cy="20" r="0.5" fill="#32373C" /><circle cx="20" cy="20" r="0.5" fill="#32373C" />
+                  <!-- Top squiggly line -->
+                  <path d="M 4 8 Q 6 4 8 8 T 12 8 T 16 8 T 20 8" stroke="#9867C1" stroke-width="3" fill="none">
+                    <animate attributeName="d" values="M 4 8 Q 6 4 8 8 T 12 8 T 16 8 T 20 8; M 4 6 Q 6 10 8 6 T 12 6 T 16 6 T 20 6; M 4 8 Q 6 4 8 8 T 12 8 T 16 8 T 20 8" dur="2s" repeatCount="indefinite"/>
+                  </path>
+                  <!-- Diagonal Sharp Triangle -->
+                  <polygon points="20,10 4,20 18,17" fill="#8EC540">
+                    <animate attributeName="transform" values="translate(0,0); translate(-2,-2); translate(0,0)" dur="3s" repeatCount="indefinite"/>
+                  </polygon>
+                  <!-- Floating Circle -->
+                  <circle cx="16" cy="18" r="3" fill="#FF6900">
+                    <animate attributeName="cx" values="16; 10; 16" dur="4s" repeatCount="indefinite"/>
+                  </circle>
+                  <line x1="4" y1="20" x2="20" y2="20" stroke="#32373C" stroke-width="4" stroke-dasharray="4 2">
+                     <animate attributeName="stroke-dashoffset" values="6; 0" dur="1s" repeatCount="indefinite" />
+                  </line>
+                </svg>
+            </div>
+            <div class="icon-small">
+                 <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round" stroke-linecap="round">
+                  <path d="M 4 8 Q 6 4 8 8 T 12 8 T 16 8 T 20 8" stroke="#9867C1" stroke-width="2" fill="none">
+                    <animate attributeName="d" values="M 4 8 Q 6 4 8 8 T 12 8 T 16 8 T 20 8; M 4 6 Q 6 10 8 6 T 12 6 T 16 6 T 20 6; M 4 8 Q 6 4 8 8 T 12 8 T 16 8 T 20 8" dur="2s" repeatCount="indefinite"/>
+                  </path>
+                  <polygon points="20,10 4,20 18,17" fill="#8EC540">
+                    <animate attributeName="transform" values="translate(0,0); translate(-2,-2); translate(0,0)" dur="3s" repeatCount="indefinite"/>
+                  </polygon>
+                  <circle cx="16" cy="18" r="3" fill="#FF6900">
+                    <animate attributeName="cx" values="16; 10; 16" dur="4s" repeatCount="indefinite"/>
+                  </circle>
+                  <line x1="4" y1="20" x2="20" y2="20" stroke="#32373C" stroke-width="2" stroke-dasharray="4 2">
+                     <animate attributeName="stroke-dashoffset" values="6; 0" dur="1s" repeatCount="indefinite" />
+                  </line>
+                </svg>
+            </div>
+            <div class="title">Bouncing Geometric Z</div>
+            <div class="desc">A Z formed completely by bouncing graphical shapes. The iconic Memphis Group aesthetic: squiggles, sharp triangles, and floating dots.</div>
+        </div>
+
+        <!-- Patrick Nagel -->
+        <div class="card">
+            <div class="tag">Patrick Nagel (Deco-Pop)</div>
+            <div class="icon-large">
+                <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round">
+                  <polygon points="4,6 20,6 20,10 10,10 4,18 20,18" fill="#8EC540" />
+                  <polygon points="12,6 20,6 20,10 12,10" fill="#32373C" />
+                  <polygon points="10,10 16,10 4,19 4,18" fill="#9867C1" />
+                  <circle cx="18" cy="8" r="1.5" fill="#FFF">
+                    <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/>
+                  </circle>
+                </svg>
+            </div>
+            <div class="icon-small">
+                <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round">
+                  <polygon points="4,6 20,6 20,10 10,10 4,18 20,18" fill="#8EC540" />
+                  <polygon points="12,6 20,6 20,10 12,10" fill="#32373C" />
+                  <polygon points="10,10 16,10 4,19 4,18" fill="#9867C1" />
+                  <circle cx="18" cy="8" r="1.5" fill="#FFF">
+                    <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/>
+                  </circle>
+                </svg>
+            </div>
+            <div class="title">The Razor Cut</div>
+            <div class="desc">Utter minimalism. A solid structural Z block cut up by razor-sharp diagonal slices of shadow and color, accented with a blinking neon gloss hit.</div>
+        </div>
+
+        <!-- Peter Saville -->
+        <div class="card">
+            <div class="tag">Peter Saville (Minimal Graphic)</div>
+            <div class="icon-large">
+                <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round" stroke-linecap="round">
+                  <!-- Horizontal scan lines -->
+                  <g stroke-width="1.5">
+                    <path d="M 2 4 Q 10 4 22 4" stroke="#8EC540"><animate attributeName="d" values="M 2 4 Q 10 4 22 4; M 2 4 Q 12 1 22 4; M 2 4 Q 10 4 22 4" dur="2s" repeatCount="indefinite"/></path>
+                    <path d="M 2 6 Q 16 6 22 6" stroke="#9867C1"><animate attributeName="d" values="M 2 6 Q 16 6 22 6; M 2 6 Q 16 3 22 6; M 2 6 Q 16 6 22 6" dur="2.1s" repeatCount="indefinite"/></path>
+                    <path d="M 2 8 Q 18 8 22 8" stroke="#8EC540"><animate attributeName="d" values="M 2 8 Q 18 10 22 8; M 2 8 Q 18 5 22 8; M 2 8 Q 18 10 22 8" dur="1.9s" repeatCount="indefinite"/></path>
+                    
+                    <path d="M 18 10 Q 14 10 10 14" stroke="#9867C1"><animate attributeName="d" values="M 18 10 Q 14 10 10 14; M 18 10 Q 14 12 10 14; M 18 10 Q 14 10 10 14" dur="2.2s" repeatCount="indefinite"/></path>
+                    <path d="M 16 12 Q 12 12 8 16" stroke="#FF6900"><animate attributeName="d" values="M 16 12 Q 12 12 8 16; M 16 12 Q 12 14 8 16; M 16 12 Q 12 12 8 16" dur="1.8s" repeatCount="indefinite"/></path>
+                    
+                    <path d="M 2 18 Q 10 18 22 18" stroke="#9867C1"><animate attributeName="d" values="M 2 18 Q 10 18 22 18; M 2 18 Q 10 15 22 18; M 2 18 Q 10 18 22 18" dur="2.3s" repeatCount="indefinite"/></path>
+                    <path d="M 2 20 Q 18 20 22 20" stroke="#8EC540"><animate attributeName="d" values="M 2 20 Q 18 20 22 20; M 2 20 Q 18 17 22 20; M 2 20 Q 18 20 22 20" dur="2s" repeatCount="indefinite"/></path>
+                  </g>
+                </svg>
+            </div>
+            <div class="icon-small">
+                 <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round" stroke-linecap="round">
+                  <g stroke-width="1">
+                    <path d="M 2 4 Q 10 4 22 4" stroke="#8EC540"><animate attributeName="d" values="M 2 4 Q 10 4 22 4; M 2 4 Q 12 1 22 4; M 2 4 Q 10 4 22 4" dur="2s" repeatCount="indefinite"/></path>
+                    <path d="M 2 6 Q 16 6 22 6" stroke="#9867C1"><animate attributeName="d" values="M 2 6 Q 16 6 22 6; M 2 6 Q 16 3 22 6; M 2 6 Q 16 6 22 6" dur="2.1s" repeatCount="indefinite"/></path>
+                    <path d="M 2 8 Q 18 8 22 8" stroke="#8EC540"><animate attributeName="d" values="M 2 8 Q 18 10 22 8; M 2 8 Q 18 5 22 8; M 2 8 Q 18 10 22 8" dur="1.9s" repeatCount="indefinite"/></path>
+                    
+                    <path d="M 18 10 Q 14 10 10 14" stroke="#9867C1"><animate attributeName="d" values="M 18 10 Q 14 10 10 14; M 18 10 Q 14 12 10 14; M 18 10 Q 14 10 10 14" dur="2.2s" repeatCount="indefinite"/></path>
+                    <path d="M 16 12 Q 12 12 8 16" stroke="#FF6900"><animate attributeName="d" values="M 16 12 Q 12 12 8 16; M 16 12 Q 12 14 8 16; M 16 12 Q 12 12 8 16" dur="1.8s" repeatCount="indefinite"/></path>
+                    
+                    <path d="M 2 18 Q 10 18 22 18" stroke="#9867C1"><animate attributeName="d" values="M 2 18 Q 10 18 22 18; M 2 18 Q 10 15 22 18; M 2 18 Q 10 18 22 18" dur="2.3s" repeatCount="indefinite"/></path>
+                    <path d="M 2 20 Q 18 20 22 20" stroke="#8EC540"><animate attributeName="d" values="M 2 20 Q 18 20 22 20; M 2 20 Q 18 17 22 20; M 2 20 Q 18 20 22 20" dur="2s" repeatCount="indefinite"/></path>
+                  </g>
+                </svg>
+            </div>
+            <div class="title">The Joy Division Pulsar</div>
+            <div class="desc">A data-driven aesthetic representing the 80s Post-Punk era. A 'Z' mapped purely by horizontal and diagonal waves pulsing through data points on a screen.</div>
+        </div>
+
+        <!-- Hajime Sorayama -->
+        <div class="card">
+            <div class="tag">Hajime Sorayama (Cyber / Chrome)</div>
+            <div class="icon-large">
+                <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round">
+                  <defs>
+                    <linearGradient id="chromeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stop-color="#EFEFEF"/>
+                      <stop offset="45%" stop-color="#888"/>
+                      <stop offset="50%" stop-color="#32373C"/>
+                      <stop offset="55%" stop-color="#666"/>
+                      <stop offset="100%" stop-color="#FFF"/>
+                    </linearGradient>
+                    <filter id="flareGlow">
+                      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+                      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                  </defs>
+                  <!-- Thick Chrome Z -->
+                  <path d="M 4 6 L 20 6 L 20 10 L 10 10 L 4 18 L 20 18 L 20 22 L 4 22 L 4 18 L 14 18 L 20 10 L 4 10 Z" fill="url(#chromeGrad)" stroke="#32373C" stroke-width="0.5" />
+                  
+                  <!-- Massive sliding lens flare -->
+                  <g filter="url(#flareGlow)">
+                     <line x1="0" y1="12" x2="24" y2="12" stroke="#9867C1" stroke-width="1" opacity="0.8">
+                       <animate attributeName="y1" values="6;6;18;18" dur="4s" keyTimes="0;0.3;0.7;1" repeatCount="indefinite" />
+                       <animate attributeName="y2" values="6;6;18;18" dur="4s" keyTimes="0;0.3;0.7;1" repeatCount="indefinite" />
+                       <animate attributeName="opacity" values="0;1;1;0" dur="4s" keyTimes="0;0.3;0.7;1" repeatCount="indefinite" />
+                     </line>
+                     <circle cx="12" cy="12" r="2" fill="#8EC540">
+                       <animate attributeName="cx" values="4;20;20;4" dur="4s" keyTimes="0;0.3;0.7;1" repeatCount="indefinite" />
+                       <animate attributeName="cy" values="6;6;18;18" dur="4s" keyTimes="0;0.3;0.7;1" repeatCount="indefinite" />
+                       <animate attributeName="r" values="0;3;3;0" dur="4s" keyTimes="0;0.3;0.7;1" repeatCount="indefinite" />
+                     </circle>
+                  </g>
+                </svg>
+            </div>
+            <div class="icon-small">
+                 <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round">
+                  <path d="M 4 6 L 20 6 L 20 10 L 10 10 L 4 18 L 20 18 L 20 22 L 4 22 L 4 18 L 14 18 L 20 10 L 4 10 Z" fill="url(#chromeGrad)" stroke="#32373C" stroke-width="0.5" />
+                  <g filter="url(#flareGlow)">
+                     <line x1="0" y1="12" x2="24" y2="12" stroke="#9867C1" stroke-width="0.5" opacity="0.8">
+                       <animate attributeName="y1" values="6;6;18;18" dur="4s" keyTimes="0;0.3;0.7;1" repeatCount="indefinite" />
+                       <animate attributeName="y2" values="6;6;18;18" dur="4s" keyTimes="0;0.3;0.7;1" repeatCount="indefinite" />
+                       <animate attributeName="opacity" values="0;1;1;0" dur="4s" keyTimes="0;0.3;0.7;1" repeatCount="indefinite" />
+                     </line>
+                     <circle cx="12" cy="12" r="1.5" fill="#8EC540">
+                       <animate attributeName="cx" values="4;20;20;4" dur="4s" keyTimes="0;0.3;0.7;1" repeatCount="indefinite" />
+                       <animate attributeName="cy" values="6;6;18;18" dur="4s" keyTimes="0;0.3;0.7;1" repeatCount="indefinite" />
+                       <animate attributeName="r" values="0;2;2;0" dur="4s" keyTimes="0;0.3;0.7;1" repeatCount="indefinite" />
+                     </circle>
+                  </g>
+                </svg>
+            </div>
+            <div class="title">Chrome & Lens Flare</div>
+            <div class="desc">Hyper-reflective 80s chrome aesthetics. The Z is defined by its metal reflection while an intense Green and Purple lens flare constantly glints along its path.</div>
+        </div>
+
+    </div>
+
+</body>
+</html>

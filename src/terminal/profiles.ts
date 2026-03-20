@@ -24,7 +24,7 @@ export const BUILTIN_TERMINAL_PROFILES: TerminalProfile[] = [
 		launchCommand: "claude",
 		env: {},
 		envStrategy: "claude-code",
-		icon: "claude-logo",
+		icon: "zenith-bridge",
 		builtin: true,
 	},
 ];

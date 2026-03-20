@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith Bridge: The Mashups</title>
+    <style>
+        body {
+            background-color: #050505;
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 { margin-bottom: 5px; color: #ffffff; text-align: center; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 2px;}
+        .subtitle { color: #00f2fe; margin-bottom: 50px; font-weight: 500; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; text-align: center; max-width: 600px;}
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+        }
+        .card {
+            background: #111;
+            border-radius: 16px;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #222;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: #a882ff;
+            box-shadow: 0 15px 50px rgba(168, 130, 255, 0.2);
+        }
+        .icon-large {
+            width: 140px;
+            height: 140px;
+            color: #ffffff;
+            margin-bottom: 25px;
+        }
+        .icon-small {
+            width: 24px;
+            height: 24px;
+            color: #ffffff;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+        .title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .desc {
+            font-size: 0.85rem;
+            color: #888;
+            text-align: center;
+            line-height: 1.4;
+        }
+        .mashup {
+            font-size: 0.75rem;
+            color: #ff0844;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 8px;
+            border: 1px solid #ff0844;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>The Mashups</h1>
+    <div class="subtitle">Legendary Architecture and Design Meets Next-Level Neon Animation</div>
+
+    <div class="grid">
+        
+        <!-- Mashup 1 -->
+        <div class="card">
+            <div class="mashup">Zaha Hadid × Holographic Glow</div>
+            <div class="icon-large">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <defs>
+                    <linearGradient id="hadidGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#ff0844">
+                        <animate attributeName="stop-color" values="#ff0844;#ffb199;#ff0844" dur="3s" repeatCount="indefinite"/>
+                      </stop>
+                      <stop offset="100%" stop-color="#ffb199">
+                        <animate attributeName="stop-color" values="#ffb199;#ff0844;#ffb199" dur="3s" repeatCount="indefinite"/>
+                      </stop>
+                    </linearGradient>
+                    <filter id="glowDark">
+                      <feGaussianBlur stdDeviation="2" result="blur"/>
+                      <feMerge>
+                        <feMergeNode in="blur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  <path d="M3 7 C 10 4, 18 7, 21 7 C 18 10, 6 14, 3 17 C 6 17, 14 20, 21 17" stroke="url(#hadidGrad)" filter="url(#glowDark)" />
+                </svg>
+            </div>
+            <div class="icon-small">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 7 C 10 4, 18 7, 21 7 C 18 10, 6 14, 3 17 C 6 17, 14 20, 21 17" stroke="url(#hadidGrad)" filter="url(#glowDark)" />
+                </svg>
+            </div>
+            <div class="title">The Parametric Flame</div>
+            <div class="desc">The organic signature curves of Hadid's architecture, rendered as a breathing, holographic ribbon of neon light.</div>
+        </div>
+
+        <!-- Mashup 2 -->
+        <div class="card">
+            <div class="mashup">M.C. Escher × Infinite Flow</div>
+            <div class="icon-large">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linejoin="round">
+                  <defs>
+                    <linearGradient id="escherGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#4facfe" />
+                      <stop offset="50%" stop-color="#00f2fe" />
+                      <stop offset="100%" stop-color="#4facfe" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M4 6h12l4 4v2l-4-4H6l-2 2v10h12l4-4v-2l-4 4H6l2-2V8l-4 4V6z" stroke="#333" />
+                  <path d="M4 6h12l4 4v2l-4-4H6l-2 2v10h12l4-4v-2l-4 4H6l2-2V8l-4 4V6z" stroke="url(#escherGrad)" stroke-width="2" stroke-dasharray="20 40">
+                    <animate attributeName="stroke-dashoffset" from="60" to="0" dur="2.5s" repeatCount="indefinite" />
+                  </path>
+                </svg>
+            </div>
+            <div class="icon-small">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linejoin="round">
+                  <path d="M4 6h12l4 4v2l-4-4H6l-2 2v10h12l4-4v-2l-4 4H6l2-2V8l-4 4V6z" stroke="#333" />
+                  <path d="M4 6h12l4 4v2l-4-4H6l-2 2v10h12l4-4v-2l-4 4H6l2-2V8l-4 4V6z" stroke="url(#escherGrad)" stroke-width="2" stroke-dasharray="20 40">
+                    <animate attributeName="stroke-dashoffset" from="60" to="0" dur="2.5s" repeatCount="indefinite" />
+                  </path>
+                </svg>
+            </div>
+            <div class="title">The Endless Construct</div>
+            <div class="desc">Escher's impossible 3D geometry acting as a dark, structural racetrack for an endlessly pulsing energy flow.</div>
+        </div>
+
+        <!-- Mashup 3 -->
+        <div class="card">
+            <div class="mashup">Paul Rand × Cyberpunk Glitch</div>
+            <div class="icon-large">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <!-- Background -->
+                  <g fill="#222">
+                    <rect x="4" y="4" width="16" height="2" />
+                    <rect x="8" y="8" width="12" height="2" />
+                    <rect x="6" y="12" width="12" height="2" />
+                    <rect x="4" y="16" width="12" height="2" />
+                    <rect x="4" y="20" width="16" height="2" />
+                  </g>
+                  <!-- Neon glitches -->
+                  <g fill="#00ffcc">
+                    <rect x="4" y="4" width="16" height="2">
+                       <animate attributeName="x" values="4;6;4;1;4" dur="2s" repeatCount="indefinite"/>
+                    </rect>
+                    <rect x="8" y="8" width="12" height="2">
+                       <animate attributeName="x" values="8;5;8;10;8" dur="3s" repeatCount="indefinite"/>
+                    </rect>
+                    <rect x="6" y="12" width="12" height="2">
+                       <animate attributeName="opacity" values="1;0;1" dur="0.2s" repeatCount="indefinite"/>
+                    </rect>
+                    <rect x="4" y="16" width="12" height="2">
+                       <animate attributeName="x" values="4;1;4;6;4" dur="1.5s" repeatCount="indefinite"/>
+                    </rect>
+                    <rect x="4" y="20" width="16" height="2">
+                       <animate attributeName="width" values="16;10;16;5;16" dur="2.5s" repeatCount="indefinite"/>
+                    </rect>
+                  </g>
+                </svg>
+            </div>
+            <div class="icon-small">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <g fill="#222">
+                    <rect x="4" y="4" width="16" height="2" />
+                    <rect x="8" y="8" width="12" height="2" />
+                    <rect x="6" y="12" width="12" height="2" />
+                    <rect x="4" y="16" width="12" height="2" />
+                    <rect x="4" y="20" width="16" height="2" />
+                  </g>
+                  <g fill="#00ffcc">
+                    <rect x="4" y="4" width="16" height="2">
+                       <animate attributeName="x" values="4;6;4;1;4" dur="2s" repeatCount="indefinite"/>
+                    </rect>
+                    <rect x="8" y="8" width="12" height="2">
+                       <animate attributeName="x" values="8;5;8;10;8" dur="3s" repeatCount="indefinite"/>
+                    </rect>
+                    <rect x="6" y="12" width="12" height="2">
+                       <animate attributeName="opacity" values="1;0;1" dur="0.2s" repeatCount="indefinite"/>
+                    </rect>
+                    <rect x="4" y="16" width="12" height="2">
+                       <animate attributeName="x" values="4;1;4;6;4" dur="1.5s" repeatCount="indefinite"/>
+                    </rect>
+                    <rect x="4" y="20" width="16" height="2">
+                       <animate attributeName="width" values="16;10;16;5;16" dur="2.5s" repeatCount="indefinite"/>
+                    </rect>
+                  </g>
+                </svg>
+            </div>
+            <div class="title">The Cyan Scanline</div>
+            <div class="desc">A bold 8-bit, heavily geometric Z that physically glitches, shifts, and echoes vertically like a damaged tape.</div>
+        </div>
+
+        <!-- Mashup 4 -->
+        <div class="card">
+            <div class="mashup">Buckminster Fuller × Pulse</div>
+            <div class="icon-large">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linejoin="round">
+                  <polygon points="4,6 20,6 4,18 20,18" stroke="#333" />
+                  <polygon points="12,2 4,6 12,12 20,6" stroke="#333" />
+                  <polygon points="12,12 4,18 12,22 20,18" stroke="#333" />
+                  <!-- Overlaid Pulse -->
+                  <path d="M12 2 L4 6 L20 6 L12 12 L4 18 L20 18 L12 22 L20 18 L4 18 L20 6" stroke="#00f2fe" stroke-width="2" stroke-dasharray="10 60">
+                    <animate attributeName="stroke-dashoffset" from="70" to="0" dur="2s" repeatCount="indefinite" />
+                  </path>
+                </svg>
+            </div>
+            <div class="icon-small">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linejoin="round">
+                  <polygon points="4,6 20,6 4,18 20,18" stroke="#333" />
+                  <polygon points="12,2 4,6 12,12 20,6" stroke="#333" />
+                  <polygon points="12,12 4,18 12,22 20,18" stroke="#333" />
+                  <path d="M12 2 L4 6 L20 6 L12 12 L4 18 L20 18 L12 22 L20 18 L4 18 L20 6" stroke="#00f2fe" stroke-width="2" stroke-dasharray="10 60">
+                    <animate attributeName="stroke-dashoffset" from="70" to="0" dur="2s" repeatCount="indefinite" />
+                  </path>
+                </svg>
+            </div>
+            <div class="title">Tensegrity Trace</div>
+            <div class="desc">Geodesic, triangular infrastructure that actively transports data payloads to the zenith peak.</div>
+        </div>
+
+        <!-- Mashup 5 -->
+        <div class="card">
+            <div class="mashup">Piet Mondrian × Circuit Nodes</div>
+            <div class="icon-large">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <!-- Static grid -->
+                  <path d="M3 6 h18 M3 18 h18 M12 6 v12" stroke="#444" stroke-width="2" fill="none"/>
+                  <!-- Breathing nodes -->
+                  <rect x="12" y="6" width="9" height="12" fill="#ff0000">
+                     <animate attributeName="opacity" values="0.8;0.2;0.8" dur="2.5s" repeatCount="indefinite"/>
+                  </rect>
+                  <rect x="3" y="18" width="5" height="4" fill="#0000ff">
+                     <animate attributeName="opacity" values="0.2;0.9;0.2" dur="1.5s" repeatCount="indefinite"/>
+                  </rect>
+                  <rect x="18" y="2" width="3" height="4" fill="#ffff00">
+                     <animate attributeName="opacity" values="0.9;0.1;0.9" dur="3.5s" repeatCount="indefinite"/>
+                  </rect>
+                  <!-- Network Pulse -->
+                  <path d="M3 6 h9 v12 h9" stroke="#ffffff" stroke-width="2" stroke-dasharray="10 50" fill="none">
+                    <animate attributeName="stroke-dashoffset" from="60" to="0" dur="2s" repeatCount="indefinite"/>
+                  </path>
+                </svg>
+            </div>
+            <div class="icon-small">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M3 6 h18 M3 18 h18 M12 6 v12" stroke="#444" stroke-width="2" fill="none"/>
+                  <rect x="12" y="6" width="9" height="12" fill="#ff0000">
+                     <animate attributeName="opacity" values="0.8;0.2;0.8" dur="2.5s" repeatCount="indefinite"/>
+                  </rect>
+                  <rect x="3" y="18" width="5" height="4" fill="#0000ff">
+                     <animate attributeName="opacity" values="0.2;0.9;0.2" dur="1.5s" repeatCount="indefinite"/>
+                  </rect>
+                  <rect x="18" y="2" width="3" height="4" fill="#ffff00">
+                     <animate attributeName="opacity" values="0.9;0.1;0.9" dur="3.5s" repeatCount="indefinite"/>
+                  </rect>
+                  <path d="M3 6 h9 v12 h9" stroke="#ffffff" stroke-width="2" stroke-dasharray="10 50" fill="none">
+                    <animate attributeName="stroke-dashoffset" from="60" to="0" dur="2s" repeatCount="indefinite"/>
+                  </path>
+                </svg>
+            </div>
+            <div class="title">The Stijl Circuit</div>
+            <div class="desc">A strict grid structure where the primary color nodes actively change opacity and route energetic data traces.</div>
+        </div>
+
+    </div>
+
+</body>
+</html>

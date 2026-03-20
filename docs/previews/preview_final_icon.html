@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FINAL ICON PROOF - Zenith Bridge</title>
+    <style>
+        body { background: #1a1a1a; color: #fff; font-family: sans-serif; padding: 40px; margin: 0; display: flex; flex-direction: column; align-items: center; }
+        h1 { color: #8EC540; text-transform: uppercase; letter-spacing: 2px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 50px; align-items: start; justify-items: center; margin-top: 40px;}
+        
+        .box { display: flex; flex-direction: column; align-items: center; border: 1px solid #333; padding: 40px; border-radius: 12px; background: #222; }
+        .label { margin-top: 20px; color: #aaa; font-size: 0.9rem; letter-spacing: 1px; text-align: center; }
+        .desc { font-size: 0.8rem; color: #777; margin-top: 10px; max-width: 200px; text-align: center; line-height: 1.4;}
+
+        /* Icon sizing */
+        .size-large { width: 128px; height: 128px; margin-bottom: 20px;}
+        
+        /* Obsidian Mockup */
+        .obsidian-ribbon { width: 48px; background: #1E1E1E; border: 1px solid #333; padding-top: 10px; padding-bottom: 50px; display: flex; flex-direction: column; align-items: center; border-radius: 8px; margin-top: 20px;}
+        .ribbon-item { width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #888; background: rgba(142, 197, 64, 0.1); border: 1px solid rgba(142, 197, 64, 0.3);}
+        .size-native { width: 24px; height: 24px; }
+
+    </style>
+</head>
+<body>
+    <h1>FINAL ICON PROOF: Build 7 + Brutalist Shadow</h1>
+    <p style="color:#aaa; max-width: 600px; text-align: center; line-height: 1.5;">
+        You asked for <strong>Build 7</strong> geometry combined with the <strong>Brutalist Drop Shadow</strong>. 
+        Here are 3 slight variations of that exact concept.
+    </p>
+
+    <div class="grid">
+        <!-- Option A -->
+        <div class="box">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round" stroke-linecap="square" class="size-large">
+                <!-- Static Purple Brutalist Shadow (Heavy offset) -->
+                <path d="M 5 6 L 19 6 L 5 18 L 19 18" stroke="#9867C1" stroke-width="5" transform="translate(1.5, 1.5)" />
+                <!-- Animated Green Foreground (Build 7 Style) -->
+                <path d="M 5 6 L 19 6 L 5 18 L 19 18" stroke="#8EC540" stroke-width="3" stroke-dasharray="60">
+                    <animate attributeName="stroke-dashoffset" values="60; 0; 0; 60; 60" dur="4s" keyTimes="0; 0.25; 0.6; 0.85; 1" repeatCount="indefinite" />
+                </path>
+            </svg>
+            <div class="label">Option A:<br/>Green Trace / Purple Shadow</div>
+            <div class="desc">Green animates built over a static, thick purple shadow.</div>
+
+            <div class="obsidian-ribbon">
+                <div class="ribbon-item">
+                    <svg viewBox="0 0 24 24" fill="none" class="size-native" stroke-linejoin="round" stroke-linecap="square">
+                        <path d="M 5 6 L 19 6 L 5 18 L 19 18" stroke="#9867C1" stroke-width="5" transform="translate(1.5, 1.5)" />
+                        <path d="M 5 6 L 19 6 L 5 18 L 19 18" stroke="#8EC540" stroke-width="3" stroke-dasharray="60">
+                            <animate attributeName="stroke-dashoffset" values="60; 0; 0; 60; 60" dur="4s" keyTimes="0; 0.25; 0.6; 0.85; 1" repeatCount="indefinite" />
+                        </path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Option B -->
+        <div class="box">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round" stroke-linecap="square" class="size-large">
+                <!-- Static Green Brutalist Shadow (Heavy offset) -->
+                <path d="M 5 6 L 19 6 L 5 18 L 19 18" stroke="#8EC540" stroke-width="5" transform="translate(1.5, 1.5)" />
+                <!-- Animated Purple Foreground (Build 7 Colors) -->
+                <path d="M 5 6 L 19 6 L 5 18 L 19 18" stroke="#9867C1" stroke-width="3" stroke-dasharray="60">
+                    <animate attributeName="stroke-dashoffset" values="60; 0; 0; 60; 60" dur="4s" keyTimes="0; 0.25; 0.6; 0.85; 1" repeatCount="indefinite" />
+                </path>
+            </svg>
+            <div class="label">Option B:<br/>Purple Trace / Green Shadow</div>
+            <div class="desc">Colors flipped to match original Build 7. Purple animates over static Green.</div>
+
+            <div class="obsidian-ribbon">
+                <div class="ribbon-item">
+                    <svg viewBox="0 0 24 24" fill="none" class="size-native" stroke-linejoin="round" stroke-linecap="square">
+                        <path d="M 5 6 L 19 6 L 5 18 L 19 18" stroke="#8EC540" stroke-width="5" transform="translate(1.5, 1.5)" />
+                        <path d="M 5 6 L 19 6 L 5 18 L 19 18" stroke="#9867C1" stroke-width="3" stroke-dasharray="60">
+                            <animate attributeName="stroke-dashoffset" values="60; 0; 0; 60; 60" dur="4s" keyTimes="0; 0.25; 0.6; 0.85; 1" repeatCount="indefinite" />
+                        </path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Option C -->
+        <div class="box">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linejoin="round" stroke-linecap="square" class="size-large">
+                <!-- Static Purple Shadow (Even Thickness) -->
+                <path d="M 5 6 L 19 6 L 5 18 L 19 18" stroke="#9867C1" stroke-width="4" transform="translate(2, 2)" />
+                <!-- Animated Green Foreground -->
+                <path d="M 5 6 L 19 6 L 5 18 L 19 18" stroke="#8EC540" stroke-width="4" stroke-dasharray="60">
+                    <animate attributeName="stroke-dashoffset" values="60; 0; 0; 60; 60" dur="4s" keyTimes="0; 0.25; 0.6; 0.85; 1" repeatCount="indefinite" />
+                </path>
+            </svg>
+            <div class="label">Option C:<br/>Equal Weight Trace/Shadow</div>
+            <div class="desc">Green foreground and Purple shadow have the exact same line weight.</div>
+
+            <div class="obsidian-ribbon">
+                <div class="ribbon-item">
+                    <svg viewBox="0 0 24 24" fill="none" class="size-native" stroke-linejoin="round" stroke-linecap="square">
+                        <path d="M 5 6 L 19 6 L 5 18 L 19 18" stroke="#9867C1" stroke-width="4" transform="translate(2, 2)" />
+                        <path d="M 5 6 L 19 6 L 5 18 L 19 18" stroke="#8EC540" stroke-width="4" stroke-dasharray="60">
+                            <animate attributeName="stroke-dashoffset" values="60; 0; 0; 60; 60" dur="4s" keyTimes="0; 0.25; 0.6; 0.85; 1" repeatCount="indefinite" />
+                        </path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

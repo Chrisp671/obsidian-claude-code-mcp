@@ -13,7 +13,7 @@ import {
 	migrateClaudeCodeSettings,
 } from "./src/settings";
 import { getVaultBasePath } from "./src/obsidian/utils";
-import claudeLogo from "./assets/claude-logo.png";
+
 import { TerminalManager } from "./src/terminal/terminal-manager";
 import {
 	TerminalProfile,
@@ -34,13 +34,18 @@ export default class ClaudeMcpPlugin extends Plugin {
 		// Load settings
 		await this.loadSettings();
 
-		// Register custom Claude icon
+		// Register custom Zenith Bridge icon
 		addIcon(
-			"claude-logo",
-			`<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-				<image href="${claudeLogo}" width="16" height="16" />
+			"zenith-bridge",
+			`<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="none" stroke-linejoin="round" stroke-linecap="square">
+				<path d="M 5 6 L 19 6 L 5 18 L 19 18" stroke="#8EC540" stroke-width="4" transform="translate(2, 2)" />
+				<path d="M 5 6 L 19 6 L 5 18 L 19 18" stroke="#9867C1" stroke-width="4" stroke-dasharray="60">
+					<animate attributeName="stroke-dashoffset" values="60; 0; 0; 60; 60" dur="4s" keyTimes="0; 0.25; 0.6; 0.85; 1" repeatCount="indefinite" />
+				</path>
 			</svg>`
 		);
+
+
 
 		// Conditionally initialize terminal features (lazy-loaded to save resources)
 		if (this.settings.enableEmbeddedTerminal) {
@@ -186,7 +191,7 @@ export default class ClaudeMcpPlugin extends Plugin {
 	public addTerminalRibbonIcon(): void {
 		if (!this.terminalRibbonIcon) {
 			this.terminalRibbonIcon = this.addRibbonIcon(
-				"claude-logo",
+				"zenith-bridge",
 				"Open or focus default terminal",
 				() => {
 					void this.focusOrCreateTerminal();
